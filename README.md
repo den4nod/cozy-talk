@@ -1,1 +1,1 @@
-# cozy-talk
+# CozyTalk social network
