@@ -21,5 +21,8 @@
   "bugs": {
     "url": "https://github.com/den4nod/cozy-talk/issues"
   },
-  "homepage": "https://github.com/den4nod/cozy-talk#readme"
+  "homepage": "https://github.com/den4nod/cozy-talk#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
