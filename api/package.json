@@ -1,0 +1,25 @@
+{
+  "name": "api",
+  "version": "1.0.0",
+  "description": "CozyTalk api module",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/den4nod/cozy-talk.git"
+  },
+  "keywords": [
+    "cozy-talk",
+    "social network",
+    "mindk",
+    "dev-camp"
+  ],
+  "author": "Denys Chechelnytskyy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/den4nod/cozy-talk/issues"
+  },
+  "homepage": "https://github.com/den4nod/cozy-talk#readme"
+}
