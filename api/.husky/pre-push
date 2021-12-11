@@ -1,0 +1,10 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+if printf "%s" "$current_branch" | grep -Eq 'main'
+then
+    message="Please do not push directly to $current_branch."
+    printf "\n\033[1;31mERROR: %s\033[0m\n" "$message";
+    exit 1
+fi
