@@ -7,4 +7,4 @@ app.get('/', function (req, res) {
   res.send('API test')
 })
 
-app.listen(process.env.APP_PORT)
+app.listen(process.env.API_PORT)
