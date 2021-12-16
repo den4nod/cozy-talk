@@ -4,7 +4,7 @@
   "description": "CozyTalk api module",
   "main": "src/app.js",
   "scripts": {
-    "start": "node -r dotenv/config src/app.js",
+    "start": "nodemon -r dotenv/config src/app.js",
     "prepare": "cd .. && husky install api/.husky",
     "lint:fix": "eslint ./src --ext .js --quiet --fix --ignore-path ./.gitignore",
     "lint:format": "prettier --loglevel warn --write \"./**/*.{js,md,json}\"",
@@ -39,6 +39,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^5.2.0",
     "husky": "^7.0.4",
+    "nodemon": "^2.0.15",
     "prettier": "2.5.1"
   }
 }
