@@ -1,5 +1,5 @@
-require('dotenv').config()
 const express = require('express')
+const config = require('./services/config')
 
 const app = express()
 
@@ -7,4 +7,4 @@ app.get('/', function (req, res) {
   res.send('API test')
 })
 
-app.listen(process.env.API_PORT)
+app.listen(config.appPort)
