@@ -18,5 +18,5 @@ else
 fi
 
 if (git diff --cached --name-only --diff-filter=AM $against | grep '^api' >/dev/null 2>&1); then
-  cd "$(dirname "$(dirname "$0")")" && npm run lint
+  cd "$(dirname "$(dirname "$0")")" && npx lint-staged
 fi
