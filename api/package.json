@@ -5,10 +5,10 @@
   "main": "src/app.js",
   "scripts": {
     "start": "nodemon -r dotenv/config src/app.js",
-    "prepare": "cd .. && husky install api/.husky",
-    "lint:fix": "eslint ./src --ext .js --quiet --fix --ignore-path ./.gitignore",
-    "lint:format": "prettier --loglevel warn --write \"./**/*.{js,md,json}\"",
-    "lint": "npm run lint:format && npm run lint:fix"
+    "prepare": "cd .. && husky install api/.husky"
+  },
+  "lint-staged": {
+    "src/*.js": "eslint"
   },
   "repository": {
     "type": "git",
@@ -39,6 +39,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-promise": "^5.2.0",
     "husky": "^7.0.4",
+    "lint-staged": "^12.1.2",
     "nodemon": "^2.0.15",
     "prettier": "2.5.1"
   }
