@@ -1,0 +1,27 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+if printf "%s" "$current_branch" | grep -Eq 'main'
+then
+    message="Please do not commit directly to $current_branch."
+    printf "\n\033[1;31mERROR: %s\033[0m\n" "$message";
+    exit 1
+fi
+
+if git rev-parse --verify HEAD >/dev/null 2>&1
+then
+    against=HEAD
+else
+    # Initial commit against an empty tree object
+    against=4b825dc642cb6eb9a060e54bf8d69288fbee4904
+fi
+
+if (git diff --cached --name-only --diff-filter=AM $against | grep '^api' >/dev/null 2>&1); then
+  cd "$(dirname "$(dirname "$0")")" && npx lint-staged
+fi
+
+if (git diff --cached --name-only --diff-filter=AM $against | grep '^front' >/dev/null 2>&1); then
+  cd "$(dirname "$(dirname "$0")")" && npx lint-staged
+fi
+
