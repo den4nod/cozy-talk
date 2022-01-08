@@ -11,3 +11,13 @@ APP_PORT=3090
 ```
 
 Replace the port value with the value of your choice.
+
+Run:
+
+```
+cd api
+
+npm ci
+
+npm prepare
+```
