@@ -4,7 +4,8 @@
   "description": "CozyTalk api module",
   "main": "src/app.js",
   "scripts": {
-    "start:dev": "nodemon -r dotenv/config src/app.js"
+    "start:dev": "nodemon -r dotenv/config src/app.js",
+    "prepare": "cd .. && husky install api/.husky"
   },
   "lint-staged": {
     "src/*.js": "eslint"
