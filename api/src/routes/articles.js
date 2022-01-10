@@ -7,6 +7,7 @@ const jsonParser = bodyParser.json()
 
 const ARTICLES_TABLE = 'articles'
 const LIKED_ARTICLES_TABLE = 'liked_articles'
+const COMMENTS_TABLE = 'comments'
 const SUCCESS_JSON_RESPONSE = { status: 'success' }
 const BAD_REQUEST_STATUS_CODE = 400
 
@@ -15,7 +16,7 @@ const errorJsonResponse = (error) => {
 }
 
 router.get('/', async function (req, res) {
-  res.json(await db(ARTICLES_TABLE).orderBy('article_id'))
+  res.json(await db(ARTICLES_TABLE).orderBy('date_edited', 'desc'))
 })
 
 router.post('/', jsonParser, async function (req, res) {
@@ -80,6 +81,102 @@ router.delete('/:articleId', function (req, res) {
 router.get('/:articleId/likes', async function (req, res) {
   const { articleId } = req.params
   res.json(await db(LIKED_ARTICLES_TABLE).where({ article_id: articleId }))
+})
+
+router.get('/:articleId/comments', async function (req, res) {
+  const { articleId } = req.params
+  res.json(
+    await db(COMMENTS_TABLE)
+      .where({ article_id: articleId })
+      .orderBy('date_edited', 'desc')
+  )
+})
+
+router.post('/:articleId/comments', jsonParser, async function (req, res) {
+  const { articleId } = req.params
+  const { userId, commentText, parentId } = req.body
+  const parentCommentId = parentId === undefined ? null : parentId
+  if (!userId) {
+    return res
+      .status(BAD_REQUEST_STATUS_CODE)
+      .json(errorJsonResponse('User cannot be empty'))
+  }
+  if (!commentText) {
+    return res
+      .status(BAD_REQUEST_STATUS_CODE)
+      .json(errorJsonResponse('Comment text cannot be empty'))
+  }
+  await db(COMMENTS_TABLE)
+    .insert({
+      article_id: articleId,
+      user_id: userId,
+      comment_text: commentText
+    })
+    .returning('comment_id')
+    .then((id) => {
+      db('comments_treepath')
+        .insert({
+          parent_comment_id: parentCommentId,
+          child_comment_id: id[0]
+        })
+        .then(() => res.json(SUCCESS_JSON_RESPONSE))
+        .catch((error) => {
+          return res
+            .status(BAD_REQUEST_STATUS_CODE)
+            .json(errorJsonResponse(error.name))
+        })
+    })
+    .catch((error) => {
+      return res
+        .status(BAD_REQUEST_STATUS_CODE)
+        .json(errorJsonResponse(error.name))
+    })
+})
+
+router.get('/:articleId/comments/:commentId', async function (req, res) {
+  const { articleId, commentId } = req.params
+  res.json(
+    await db(COMMENTS_TABLE).where({
+      comment_id: commentId,
+      article_id: articleId
+    })
+  )
+})
+
+router.put(
+  '/:articleId/comments/:commentId',
+  jsonParser,
+  async function (req, res) {
+    const { articleId, commentId } = req.params
+    const { commentText } = req.body
+    if (!commentText) {
+      return res
+        .status(BAD_REQUEST_STATUS_CODE)
+        .json(errorJsonResponse('Comment text cannot be empty'))
+    }
+    await db(COMMENTS_TABLE)
+      .where({ comment_id: commentId, article_id: articleId })
+      .update({ comment_text: commentText })
+      .then(() => res.json(SUCCESS_JSON_RESPONSE))
+      .catch((error) => {
+        return res
+          .status(BAD_REQUEST_STATUS_CODE)
+          .json(errorJsonResponse(error.name))
+      })
+  }
+)
+
+router.delete('/:articleId/comments/:commentId', function (req, res) {
+  const { articleId, commentId } = req.params
+  db(COMMENTS_TABLE)
+    .where({ comment_id: commentId, article_id: articleId })
+    .del()
+    .then(() => res.json(SUCCESS_JSON_RESPONSE))
+    .catch((error) => {
+      return res
+        .status(BAD_REQUEST_STATUS_CODE)
+        .json(errorJsonResponse(error.name))
+    })
 })
 
 module.exports = router

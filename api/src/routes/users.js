@@ -15,7 +15,7 @@ const errorJsonResponse = (error) => {
 }
 
 router.get('/', async function (req, res) {
-  res.json(await db(USERS_TABLE).orderBy('user_id'))
+  res.json(await db(USERS_TABLE).orderBy('name'))
 })
 
 router.post('/', jsonParser, async function (req, res) {
