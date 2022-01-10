@@ -94,7 +94,8 @@ router.get('/:articleId/comments', async function (req, res) {
 
 router.post('/:articleId/comments', jsonParser, async function (req, res) {
   const { articleId } = req.params
-  const { userId, commentText } = req.body
+  const { userId, commentText, parentId } = req.body
+  const parentCommentId = parentId === undefined ? null : parentId
   if (!userId) {
     return res
       .status(BAD_REQUEST_STATUS_CODE)
@@ -111,7 +112,20 @@ router.post('/:articleId/comments', jsonParser, async function (req, res) {
       user_id: userId,
       comment_text: commentText
     })
-    .then(() => res.json(SUCCESS_JSON_RESPONSE))
+    .returning('comment_id')
+    .then((id) => {
+      db('comments_treepath')
+        .insert({
+          parent_comment_id: parentCommentId,
+          child_comment_id: id[0]
+        })
+        .then(() => res.json(SUCCESS_JSON_RESPONSE))
+        .catch((error) => {
+          return res
+            .status(BAD_REQUEST_STATUS_CODE)
+            .json(errorJsonResponse(error.name))
+        })
+    })
     .catch((error) => {
       return res
         .status(BAD_REQUEST_STATUS_CODE)
