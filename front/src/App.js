@@ -19,6 +19,8 @@ import {
 import { Articles } from './components/articles/articles'
 import { AddArticle } from './components/articles/addArticle'
 import { Profile } from './components/profile/profile'
+import { NotFound } from './components/pages/notFound'
+import { PostRouteContainer } from './containers/post/postRoute'
 
 function App() {
 
@@ -34,7 +36,7 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path='*' element={
+        <Route path='/' element={
           <div className='App'>
             <HeaderContainer page={page} onPageChange={setPage} onPageTitleChange={setPageTitle} />
             <Divider />
@@ -50,6 +52,9 @@ function App() {
         <Route path={ROUTES.PROFILE} element={
           <Profile pageTitle={PROFILE_PAGE_TITLE} />
         } />
+        <Route path='/post/:id' element={<PostRouteContainer />} />
+        <Route path='/post/*' element={<NotFound />} />
+        <Route path='*' element={<NotFound />} />
       </Routes>
 
     </BrowserRouter>
