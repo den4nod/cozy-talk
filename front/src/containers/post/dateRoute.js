@@ -16,7 +16,7 @@ export function DateRouteContainer() {
   }
 
   const dateInPast = (date) => {
-    return new Date(date).setDate(new Date(date).getDate() + 1) < Date.now()
+    return new Date(date) < new Date().setDate(new Date().getDate() - 1)
   }
 
   if (matchDateFrom(date) && dateInPast(date)) {
