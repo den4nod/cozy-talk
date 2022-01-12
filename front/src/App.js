@@ -21,6 +21,7 @@ import { AddArticle } from './components/articles/addArticle'
 import { Profile } from './components/profile/profile'
 import { NotFound } from './components/pages/notFound'
 import { PostRouteContainer } from './containers/post/postRoute'
+import { DateRouteContainer } from './containers/post/dateRoute'
 
 function App() {
 
@@ -54,6 +55,8 @@ function App() {
         } />
         <Route path='/post/:id' element={<PostRouteContainer />} />
         <Route path='/post/*' element={<NotFound />} />
+        <Route path='/date/:date' element={<DateRouteContainer />} />
+        <Route path='/date/*' element={<NotFound />} />
         <Route path='*' element={<NotFound />} />
       </Routes>
 

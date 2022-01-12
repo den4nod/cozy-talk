@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom'
-import { PostRoute } from '../../components/pages/postRoute'
+import { RouteMatch } from '../../components/pages/routeMatch'
 import { NotFound } from '../../components/pages/notFound'
 
 export function PostRouteContainer() {
@@ -28,13 +28,13 @@ export function PostRouteContainer() {
   }
 
   if (matchNumericString(id)) {
-    return <PostRoute title={PAGE_TITLES.NUMERIC_ID} body={id} />
+    return <RouteMatch title={PAGE_TITLES.NUMERIC_ID} body={id} />
   }
   if (matchCapitalString(id)) {
-    return <PostRoute title={PAGE_TITLES.CAPITAL_LETTERS_ID} body={id} />
+    return <RouteMatch title={PAGE_TITLES.CAPITAL_LETTERS_ID} body={id} />
   }
   if (matchFilenameWithExtensionString(id)) {
-    return <PostRoute title={PAGE_TITLES.FILENAME_WITH_EXT_ID} body={id} />
+    return <RouteMatch title={PAGE_TITLES.FILENAME_WITH_EXT_ID} body={id} />
   }
   return <NotFound />
 }
