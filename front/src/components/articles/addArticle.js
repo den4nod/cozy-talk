@@ -1,11 +1,10 @@
-import Typography from '@mui/material/Typography'
+import { PageTitle } from '../pageTitle/pageTitle'
+import { Container } from '@mui/material'
 
 export function AddArticle({ pageTitle }) {
   return (
-    <div>
-      <Typography gutterBottom variant='h4' component='div' mt={3}>
-        {pageTitle}
-      </Typography>
-    </div>
+    <Container maxWidth='sm' sx={{ textAlign: 'center' }}>
+      <PageTitle pageTitle={pageTitle} />
+    </Container>
   )
 }

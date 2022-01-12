@@ -1,12 +1,11 @@
 import { PostContainer } from '../../containers/post/post'
-import Typography from '@mui/material/Typography'
+import { PageTitle } from '../pageTitle/pageTitle'
+import { Container } from '@mui/material'
 
 export function Articles({ pageTitle }) {
   return (
-    <div>
-      <Typography gutterBottom variant='h4' component='div' mt={3}>
-        {pageTitle}
-      </Typography>
+    <Container maxWidth='sm' sx={{ textAlign: 'center' }}>
+      <PageTitle pageTitle={pageTitle} />
       <PostContainer
         subject='First post'
         body='The first post in CozyTalk social network.
@@ -16,6 +15,6 @@ export function Articles({ pageTitle }) {
                       other people in community who view your page.'
         tags={['first post', 'post', 'cozy talk', 'news']}
       />
-    </div>
+    </Container>
   )
 }

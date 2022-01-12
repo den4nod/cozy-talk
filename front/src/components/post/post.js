@@ -1,11 +1,12 @@
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
+import { Container } from '@mui/material'
 
 export function Post({ subject, body, tags }) {
   return (
-    <div>
-      <Card variant='outlined' sx={{ maxWidth: 350, margin: 'auto' }}>
+    <Container maxWidth='sm' sx={{ textAlign: 'center' }}>
+      <Card variant='outlined' maxWidth='sm'>
         <CardContent>
           <Typography gutterBottom variant='h5' component='div'>
             {subject}
@@ -18,6 +19,6 @@ export function Post({ subject, body, tags }) {
           </Typography>
         </CardContent>
       </Card>
-    </div>
+    </Container>
   )
 }
