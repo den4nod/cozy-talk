@@ -2,6 +2,7 @@ import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
 import { Container } from '@mui/material'
+import PropTypes from 'prop-types'
 
 export function Post({ subject, body, tags }) {
   return (
@@ -21,4 +22,14 @@ export function Post({ subject, body, tags }) {
       </Card>
     </Container>
   )
+}
+
+Post.propTypes = {
+  subject: PropTypes.string.isRequired,
+  body: PropTypes.string.isRequired,
+  tags: PropTypes.string
+}
+
+Post.defaultProps = {
+  tags: ''
 }
