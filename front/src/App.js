@@ -22,6 +22,7 @@ import { Profile } from './components/profile/profile'
 import { NotFound } from './components/pages/notFound'
 import { PostRouteContainer } from './containers/post/postRoute'
 import { DateRouteContainer } from './containers/post/dateRoute'
+import ErrorBoundary from './components/ErrorBoundary'
 
 function App() {
 
@@ -35,32 +36,37 @@ function App() {
   const [pageTitle, setPageTitle] = useState(ARTICLES_PAGE_TITLE)
 
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/' element={
-          <div className='App'>
-            <HeaderContainer page={page} onPageChange={setPage} onPageTitleChange={setPageTitle} />
-            <Divider />
-            <BodyContainer page={page} pageTitle={pageTitle} />
-          </div>
-        } />
-        <Route path={ROUTES.ARTICLES} element={
-          <Articles pageTitle={ARTICLES_PAGE_TITLE} />
-        } />
-        <Route path={ROUTES.ADD_ARTICLE} element={
-          <AddArticle pageTitle={ADD_ARTICLE_PAGE_TITLE} />
-        } />
-        <Route path={ROUTES.PROFILE} element={
-          <Profile pageTitle={PROFILE_PAGE_TITLE} />
-        } />
-        <Route path='/post/:id' element={<PostRouteContainer />} />
-        <Route path='/post/*' element={<NotFound />} />
-        <Route path='/date/:date' element={<DateRouteContainer />} />
-        <Route path='/date/*' element={<NotFound />} />
-        <Route path='*' element={<NotFound />} />
-      </Routes>
-
-    </BrowserRouter>
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={
+            <div className='App'>
+              <ErrorBoundary>
+                <HeaderContainer page={page} onPageChange={setPage} onPageTitleChange={setPageTitle} />
+              </ErrorBoundary>
+              <Divider />
+              <ErrorBoundary>
+                <BodyContainer page={page} pageTitle={pageTitle} />
+              </ErrorBoundary>
+            </div>
+          } />
+          <Route path={ROUTES.ARTICLES} element={
+            <Articles pageTitle={ARTICLES_PAGE_TITLE} />
+          } />
+          <Route path={ROUTES.ADD_ARTICLE} element={
+            <AddArticle pageTitle={ADD_ARTICLE_PAGE_TITLE} />
+          } />
+          <Route path={ROUTES.PROFILE} element={
+            <Profile pageTitle={PROFILE_PAGE_TITLE} />
+          } />
+          <Route path='/post/:id' element={<PostRouteContainer />} />
+          <Route path='/post/*' element={<NotFound />} />
+          <Route path='/date/:date' element={<DateRouteContainer />} />
+          <Route path='/date/*' element={<NotFound />} />
+          <Route path='*' element={<NotFound />} />
+        </Routes>
+      </BrowserRouter>
+    </ErrorBoundary>
   )
 }
 
