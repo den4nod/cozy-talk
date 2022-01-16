@@ -1,6 +1,7 @@
 import { PageTitle } from '../pageTitle/pageTitle'
 import { Container } from '@mui/material'
 import Typography from '@mui/material/Typography'
+import PropTypes from 'prop-types'
 
 export function RouteMatch({ title, body }) {
   return (
@@ -11,4 +12,9 @@ export function RouteMatch({ title, body }) {
       </Typography>
     </Container>
   )
+}
+
+RouteMatch.propTypes = {
+  title: PropTypes.string.isRequired,
+  body: PropTypes.string.isRequired
 }

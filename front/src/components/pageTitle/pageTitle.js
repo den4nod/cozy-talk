@@ -1,4 +1,5 @@
 import Typography from '@mui/material/Typography'
+import PropTypes from 'prop-types'
 
 export function PageTitle({ pageTitle }) {
   return (
@@ -6,4 +7,8 @@ export function PageTitle({ pageTitle }) {
       {pageTitle}
     </Typography>
   )
+}
+
+PageTitle.propTypes = {
+  pageTitle: PropTypes.string.isRequired
 }

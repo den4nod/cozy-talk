@@ -7,6 +7,7 @@ import {
   ARTICLES_PAGE_TITLE,
   PROFILE_PAGE, PROFILE_PAGE_TITLE
 } from '../../constants'
+import PropTypes from 'prop-types'
 
 const VARIANT_CONTAINED = 'contained'
 const VARIANT_TEXT = 'text'
@@ -43,4 +44,10 @@ export function HeaderContainer({ page, onPageChange, onPageTitleChange }) {
       </ButtonGroup>
     </div>
   )
+}
+
+HeaderContainer.propTypes = {
+  page: PropTypes.string.isRequired,
+  onPageChange: PropTypes.func.isRequired,
+  onPageTitleChange: PropTypes.func.isRequired
 }

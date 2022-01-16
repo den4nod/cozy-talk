@@ -2,14 +2,14 @@ import { PageTitle } from '../pageTitle/pageTitle'
 import { Container } from '@mui/material'
 import PropTypes from 'prop-types'
 
-export function AddArticle({ pageTitle }) {
+export function Error({ title }) {
   return (
     <Container maxWidth='sm' sx={{ textAlign: 'center' }}>
-      <PageTitle pageTitle={pageTitle} />
+      <PageTitle pageTitle={title} />
     </Container>
   )
 }
 
-AddArticle.propTypes = {
-  pageTitle: PropTypes.string.isRequired
+Error.propTypes = {
+  title: PropTypes.string.isRequired
 }
