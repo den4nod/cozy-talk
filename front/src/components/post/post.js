@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 export function Post({ subject, body, tags }) {
   return (
     <Container maxWidth='sm' sx={{ textAlign: 'center' }}>
-      <Card variant='outlined' maxWidth='sm'>
+      <Card variant='outlined'>
         <CardContent>
           <Typography gutterBottom variant='h5' component='div'>
             {subject}
