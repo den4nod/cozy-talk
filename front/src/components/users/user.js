@@ -5,6 +5,7 @@ import { Avatar, CardActions, Container, Stack } from '@mui/material'
 import PropTypes from 'prop-types'
 import Button from '@mui/material/Button'
 import { useNavigate } from 'react-router-dom'
+import { API_ENDPOINTS } from '../../constants'
 
 export function User({ userId, name, email, phone, userDetails }) {
 
@@ -15,7 +16,7 @@ export function User({ userId, name, email, phone, userDetails }) {
   const navigate = useNavigate()
 
   const redirectToUserPage = (userId) => () => {
-    navigate(`/users/${userId}`)
+    navigate(`${API_ENDPOINTS.USERS}/${userId}`)
   }
 
   const resolveFirstLetterFrom = (name) => {
