@@ -9,7 +9,9 @@ import {
   ARTICLES_PAGE,
   ARTICLES_PAGE_TITLE,
   PROFILE_PAGE,
-  PROFILE_PAGE_TITLE
+  PROFILE_PAGE_TITLE, USER_PAGE_TITLE,
+  USERS_PAGE,
+  USERS_PAGE_TITLE
 } from './constants'
 import {
   BrowserRouter,
@@ -24,13 +26,16 @@ import { PostRouteContainer } from './containers/post/postRoute'
 import { DateRouteContainer } from './containers/post/dateRoute'
 import ErrorBoundary from './components/ErrorBoundary'
 import { QueryClient, QueryClientProvider } from 'react-query'
+import { UsersPage } from './components/users/usersPage'
+import { UserPage } from './components/users/userPage'
 
 function App() {
 
   const ROUTES = {
     ARTICLES: '/' + ARTICLES_PAGE,
     ADD_ARTICLE: '/' + ADD_ARTICLE_PAGE,
-    PROFILE: '/' + PROFILE_PAGE
+    PROFILE: '/' + PROFILE_PAGE,
+    USERS: '/' + USERS_PAGE
   }
 
   const [page, setPage] = useState(ARTICLES_PAGE)
@@ -62,6 +67,12 @@ function App() {
             } />
             <Route path={ROUTES.PROFILE} element={
               <Profile pageTitle={PROFILE_PAGE_TITLE} />
+            } />
+            <Route path={ROUTES.USERS} element={
+              <UsersPage pageTitle={USERS_PAGE_TITLE} />
+            } />
+            <Route path={ROUTES.USERS + '/:userId'} element={
+              <UserPage pageTitle={USER_PAGE_TITLE} />
             } />
             <Route path='/post/:id' element={<PostRouteContainer />} />
             <Route path='/post/*' element={<NotFound />} />

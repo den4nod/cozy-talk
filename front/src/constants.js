@@ -4,7 +4,11 @@ export const ADD_ARTICLE_PAGE = 'addArticle'
 export const ADD_ARTICLE_PAGE_TITLE = 'Add article'
 export const PROFILE_PAGE = 'profile'
 export const PROFILE_PAGE_TITLE = 'Profile'
+export const USERS_PAGE = 'users'
+export const USERS_PAGE_TITLE = 'Users'
+export const USER_PAGE_TITLE = 'User'
 
 export const API_ENDPOINTS = {
-  ARTICLES: '/articles'
+  ARTICLES: '/articles',
+  USERS: '/users'
 }
