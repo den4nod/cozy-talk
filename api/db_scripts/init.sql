@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS articles
     article_body                 text      NOT NULL,
     user_id                      uuid      NOT NULL,
     article_visibility_status_id smallint,
-    date_crated                  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    date_created                  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     date_edited                  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
         ON DELETE CASCADE ON UPDATE CASCADE,
@@ -119,7 +119,7 @@ CREATE TABLE IF NOT EXISTS comments
     article_id   uuid      NOT NULL,
     user_id      uuid      NOT NULL,
     comment_text text      NOT NULL,
-    date_crated  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    date_created  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     date_edited  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (article_id) REFERENCES articles (article_id)
         ON DELETE CASCADE ON UPDATE CASCADE,
