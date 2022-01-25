@@ -43,7 +43,14 @@ router.post('/', jsonParser, async function (req, res) {
 
 router.get('/:articleId', async function (req, res) {
   const { articleId } = req.params
-  res.json(await db(ARTICLES_TABLE).where({ article_id: articleId }))
+  await db(ARTICLES_TABLE)
+    .where({ article_id: articleId })
+    .then((result) => res.json(result))
+    .catch(() =>
+      res
+        .status(BAD_REQUEST_STATUS_CODE)
+        .json(errorJsonResponse('Article does not exist'))
+    )
 })
 
 router.put('/:articleId', jsonParser, async function (req, res) {

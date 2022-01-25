@@ -47,7 +47,14 @@ router.post('/', jsonParser, async function (req, res) {
 
 router.get('/:id', async function (req, res) {
   const { id } = req.params
-  res.json(await db(USERS_TABLE).where({ user_id: id }))
+  await db(USERS_TABLE)
+    .where({ user_id: id })
+    .then((result) => res.json(result))
+    .catch(() =>
+      res
+        .status(BAD_REQUEST_STATUS_CODE)
+        .json(errorJsonResponse(`User does not exist`))
+    )
 })
 
 router.put('/:id', jsonParser, async function (req, res) {

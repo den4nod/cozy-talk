@@ -1,17 +1,17 @@
-import { PostContainer } from '../../containers/post/post'
 import { PageTitle } from '../pageTitle/pageTitle'
 import { Container } from '@mui/material'
 import PropTypes from 'prop-types'
+import UsersContainer from '../../containers/user/users'
 
-export function Articles({ pageTitle }) {
+export function UsersPage({ pageTitle }) {
   return (
     <Container maxWidth='sm' sx={{ textAlign: 'center' }}>
       <PageTitle pageTitle={pageTitle} />
-      <PostContainer />
+      <UsersContainer />
     </Container>
   )
 }
 
-Articles.propTypes = {
+UsersPage.propTypes = {
   pageTitle: PropTypes.string.isRequired
 }

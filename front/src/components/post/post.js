@@ -4,19 +4,16 @@ import Typography from '@mui/material/Typography'
 import { Container } from '@mui/material'
 import PropTypes from 'prop-types'
 
-export function Post({ subject, body, tags }) {
+export function Post({ body, dateCreated }) {
   return (
-    <Container maxWidth='sm' sx={{ textAlign: 'center' }}>
+    <Container maxWidth='sm' sx={{ textAlign: 'center', mt: 2 }}>
       <Card variant='outlined'>
         <CardContent>
           <Typography gutterBottom variant='h5' component='div'>
-            {subject}
-          </Typography>
-          <Typography variant='body2' color='text.secondary' pb={1}>
             {body}
           </Typography>
-          <Typography variant='body2'>
-            {tags}
+          <Typography variant='body2' color='text.secondary'>
+            {dateCreated}
           </Typography>
         </CardContent>
       </Card>
@@ -25,11 +22,10 @@ export function Post({ subject, body, tags }) {
 }
 
 Post.propTypes = {
-  subject: PropTypes.string.isRequired,
   body: PropTypes.string.isRequired,
-  tags: PropTypes.string
+  dateCreated: PropTypes.string
 }
 
 Post.defaultProps = {
-  tags: ''
+  dateCreated: ''
 }

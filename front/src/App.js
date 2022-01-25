@@ -9,7 +9,9 @@ import {
   ARTICLES_PAGE,
   ARTICLES_PAGE_TITLE,
   PROFILE_PAGE,
-  PROFILE_PAGE_TITLE
+  PROFILE_PAGE_TITLE, USER_PAGE_TITLE,
+  USERS_PAGE,
+  USERS_PAGE_TITLE
 } from './constants'
 import {
   BrowserRouter,
@@ -23,50 +25,64 @@ import { NotFound } from './components/pages/notFound'
 import { PostRouteContainer } from './containers/post/postRoute'
 import { DateRouteContainer } from './containers/post/dateRoute'
 import ErrorBoundary from './components/ErrorBoundary'
+import { QueryClient, QueryClientProvider } from 'react-query'
+import { UsersPage } from './components/users/usersPage'
+import { UserPage } from './components/users/userPage'
 
 function App() {
 
   const ROUTES = {
     ARTICLES: '/' + ARTICLES_PAGE,
     ADD_ARTICLE: '/' + ADD_ARTICLE_PAGE,
-    PROFILE: '/' + PROFILE_PAGE
+    PROFILE: '/' + PROFILE_PAGE,
+    USERS: '/' + USERS_PAGE
   }
 
   const [page, setPage] = useState(ARTICLES_PAGE)
   const [pageTitle, setPageTitle] = useState(ARTICLES_PAGE_TITLE)
 
+  const queryClient = new QueryClient();
+
   return (
-    <ErrorBoundary>
-      <BrowserRouter>
-        <Routes>
-          <Route path='/' element={
-            <div className='App'>
-              <ErrorBoundary>
-                <HeaderContainer page={page} onPageChange={setPage} onPageTitleChange={setPageTitle} />
-              </ErrorBoundary>
-              <Divider />
-              <ErrorBoundary>
-                <BodyContainer page={page} pageTitle={pageTitle} />
-              </ErrorBoundary>
-            </div>
-          } />
-          <Route path={ROUTES.ARTICLES} element={
-            <Articles pageTitle={ARTICLES_PAGE_TITLE} />
-          } />
-          <Route path={ROUTES.ADD_ARTICLE} element={
-            <AddArticle pageTitle={ADD_ARTICLE_PAGE_TITLE} />
-          } />
-          <Route path={ROUTES.PROFILE} element={
-            <Profile pageTitle={PROFILE_PAGE_TITLE} />
-          } />
-          <Route path='/post/:id' element={<PostRouteContainer />} />
-          <Route path='/post/*' element={<NotFound />} />
-          <Route path='/date/:date' element={<DateRouteContainer />} />
-          <Route path='/date/*' element={<NotFound />} />
-          <Route path='*' element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </ErrorBoundary>
+    <QueryClientProvider client={queryClient}>
+      <ErrorBoundary>
+        <BrowserRouter>
+          <Routes>
+            <Route path='/' element={
+              <div className='App'>
+                <ErrorBoundary>
+                  <HeaderContainer page={page} onPageChange={setPage} onPageTitleChange={setPageTitle} />
+                </ErrorBoundary>
+                <Divider />
+                <ErrorBoundary>
+                  <BodyContainer page={page} pageTitle={pageTitle} />
+                </ErrorBoundary>
+              </div>
+            } />
+            <Route path={ROUTES.ARTICLES} element={
+              <Articles pageTitle={ARTICLES_PAGE_TITLE} />
+            } />
+            <Route path={ROUTES.ADD_ARTICLE} element={
+              <AddArticle pageTitle={ADD_ARTICLE_PAGE_TITLE} />
+            } />
+            <Route path={ROUTES.PROFILE} element={
+              <Profile pageTitle={PROFILE_PAGE_TITLE} />
+            } />
+            <Route path={ROUTES.USERS} element={
+              <UsersPage pageTitle={USERS_PAGE_TITLE} />
+            } />
+            <Route path={ROUTES.USERS + '/:userId'} element={
+              <UserPage pageTitle={USER_PAGE_TITLE} />
+            } />
+            <Route path='/post/:id' element={<PostRouteContainer />} />
+            <Route path='/post/*' element={<NotFound />} />
+            <Route path='/date/:date' element={<DateRouteContainer />} />
+            <Route path='/date/*' element={<NotFound />} />
+            <Route path='*' element={<NotFound />} />
+          </Routes>
+        </BrowserRouter>
+      </ErrorBoundary>
+    </QueryClientProvider>
   )
 }
 
