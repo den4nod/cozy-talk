@@ -4,6 +4,8 @@ const config = require('./services/config')
 const corsConfig = require('./services/corsConfig')
 const users = require('./routes/users')
 const articles = require('./routes/articles')
+const comments = require('./routes/comments')
+const likes = require('./routes/likes')
 
 const app = express()
 
@@ -15,4 +17,6 @@ app.get('/', function (req, res) {
 
 app.use('/users', users)
 app.use('/articles', articles)
+app.use('/comments', comments)
+app.use('/likes', likes)
 app.listen(config.appPort)
