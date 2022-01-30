@@ -6,6 +6,7 @@ const users = require('./routes/users')
 const articles = require('./routes/articles')
 const comments = require('./routes/comments')
 const likes = require('./routes/likes')
+const avatars = require('./routes/avatars')
 
 const app = express()
 
@@ -19,4 +20,5 @@ app.use('/users', users)
 app.use('/articles', articles)
 app.use('/comments', comments)
 app.use('/likes', likes)
+app.use('/avatars', avatars)
 app.listen(config.appPort)

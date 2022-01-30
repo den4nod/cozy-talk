@@ -39,7 +39,7 @@ module.exports = {
       .insert({ article_body: articleBody, user_id: userId })
       .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
       .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.name))
+        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
       )
   },
 
@@ -55,7 +55,7 @@ module.exports = {
       .update({ article_body: articleBody })
       .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
       .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.name))
+        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
       )
   },
 
@@ -65,6 +65,6 @@ module.exports = {
       .del()
       .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
       .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.name))
+        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
       )
 }
