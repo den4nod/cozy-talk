@@ -44,7 +44,7 @@ module.exports = {
       .insert({ name: name, email: email, phone: phone })
       .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
       .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.name))
+        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
       )
   },
 
@@ -65,7 +65,7 @@ module.exports = {
       .update(updateFields)
       .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
       .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.name))
+        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
       )
   },
 
@@ -75,6 +75,6 @@ module.exports = {
       .del()
       .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
       .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.name))
+        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
       )
 }

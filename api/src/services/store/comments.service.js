@@ -82,11 +82,14 @@ module.exports = {
           })
           .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
           .catch((error) =>
-            apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.name))
+            apiResponse(
+              STATUS_CODES.BAD_REQUEST,
+              errorJsonResponse(error.message)
+            )
           )
       })
       .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.name))
+        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
       )
   },
 
@@ -107,7 +110,7 @@ module.exports = {
       .update({ comment_text: commentText })
       .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
       .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.name))
+        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
       )
   },
 
@@ -122,7 +125,7 @@ module.exports = {
       .del()
       .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
       .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.name))
+        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
       )
   }
 }
