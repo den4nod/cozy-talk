@@ -19,7 +19,6 @@ import {
   Route
 } from 'react-router-dom'
 import { Articles } from './components/articles/articles'
-import { AddArticle } from './components/articles/addArticle'
 import { Profile } from './components/profile/profile'
 import { NotFound } from './components/pages/notFound'
 import { PostRouteContainer } from './containers/post/postRoute'
@@ -28,6 +27,8 @@ import ErrorBoundary from './components/ErrorBoundary'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import { UsersPage } from './components/users/usersPage'
 import { UserPage } from './components/users/userPage'
+import ArticleFormContainer from './containers/forms/articleForm'
+import UserFormContainer from './containers/forms/userForm'
 
 function App() {
 
@@ -63,7 +64,7 @@ function App() {
               <Articles pageTitle={ARTICLES_PAGE_TITLE} />
             } />
             <Route path={ROUTES.ADD_ARTICLE} element={
-              <AddArticle pageTitle={ADD_ARTICLE_PAGE_TITLE} />
+              <ArticleFormContainer pageTitle={ADD_ARTICLE_PAGE_TITLE} />
             } />
             <Route path={ROUTES.PROFILE} element={
               <Profile pageTitle={PROFILE_PAGE_TITLE} />
@@ -78,6 +79,7 @@ function App() {
             <Route path='/post/*' element={<NotFound />} />
             <Route path='/date/:date' element={<DateRouteContainer />} />
             <Route path='/date/*' element={<NotFound />} />
+            <Route path='/userForm' element={<UserFormContainer />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
         </BrowserRouter>
