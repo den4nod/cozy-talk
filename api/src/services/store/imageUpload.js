@@ -3,13 +3,19 @@ const multerS3 = require('multer-s3')
 const { s3, s3Bucket } = require('../s3Config')
 const path = require('path')
 const { v4: uuidv4 } = require('uuid')
+const { ErrorHandler } = require('../../error')
 
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
     cb(null, true)
   } else {
     cb(
-      new Error('Invalid image format: only JPEG, JPG and PNG are allowed'),
+      new ErrorHandler(
+        'Invalid image format: only JPEG, JPG and PNG are allowed',
+        {
+          expose: true
+        }
+      ),
       false
     )
   }

@@ -1,7 +1,6 @@
 const db = require('../../services/db')
-const { TABLES, STATUS_CODES } = require('./constants')
-require('http-errors')
-const { customExposedError } = require('../../error')
+const { TABLES } = require('./constants')
+const { ErrorHandler } = require('../../error')
 
 module.exports = {
   getAllArticles: async () =>
@@ -12,13 +11,14 @@ module.exports = {
 
   createArticle: async (articleBody, userId) => {
     if (!articleBody) {
-      throw customExposedError(
-        STATUS_CODES.BAD_REQUEST,
-        'Article body cannot be empty'
-      )
+      throw new ErrorHandler('Article body cannot be empty', {
+        expose: true
+      })
     }
     if (!userId) {
-      throw customExposedError(STATUS_CODES.BAD_REQUEST, 'User cannot be empty')
+      throw new ErrorHandler('User cannot be empty', {
+        expose: true
+      })
     }
     return db(TABLES.ARTICLES)
       .insert({ article_body: articleBody, user_id: userId })
@@ -27,10 +27,9 @@ module.exports = {
 
   updateArticleById: async (articleId, articleBody) => {
     if (!articleBody) {
-      throw customExposedError(
-        STATUS_CODES.BAD_REQUEST,
-        'Article body cannot be empty'
-      )
+      throw new ErrorHandler('Article body cannot be empty', {
+        expose: true
+      })
     }
     return db(TABLES.ARTICLES)
       .where({ article_id: articleId })

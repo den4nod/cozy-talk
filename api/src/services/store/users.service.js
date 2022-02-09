@@ -1,6 +1,6 @@
 const db = require('../../services/db')
-const { TABLES, STATUS_CODES } = require('./constants')
-const { customExposedError } = require('../../error')
+const { TABLES } = require('./constants')
+const { ErrorHandler } = require('../../error')
 
 module.exports = {
   getAllUsers: async () => db(TABLES.USERS).orderBy('name'),
@@ -9,19 +9,19 @@ module.exports = {
 
   createUser: async (name, email, phone) => {
     if (!name) {
-      throw customExposedError(STATUS_CODES.BAD_REQUEST, 'Name cannot be empty')
+      throw new ErrorHandler('Name cannot be empty', {
+        expose: true
+      })
     }
     if (!email) {
-      throw customExposedError(
-        STATUS_CODES.BAD_REQUEST,
-        'Email cannot be empty'
-      )
+      throw new ErrorHandler('Email cannot be empty', {
+        expose: true
+      })
     }
     if (!phone) {
-      throw customExposedError(
-        STATUS_CODES.BAD_REQUEST,
-        'Phone cannot be empty'
-      )
+      throw new ErrorHandler('Phone cannot be empty', {
+        expose: true
+      })
     }
     return db(TABLES.USERS)
       .insert({ name: name, email: email, phone: phone })
@@ -30,7 +30,9 @@ module.exports = {
 
   updateUserById: async (userId, name, email, phone) => {
     if (!name && !email && !phone) {
-      throw customExposedError(STATUS_CODES.BAD_REQUEST, 'Nothing to update')
+      throw new ErrorHandler('Nothing to update', {
+        expose: true
+      })
     }
     const updateFields = {
       ...(name && { name: name }),

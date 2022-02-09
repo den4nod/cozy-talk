@@ -1,6 +1,6 @@
 const db = require('../../services/db')
-const { TABLES, STATUS_CODES } = require('./constants')
-const { customExposedError } = require('../../error')
+const { TABLES } = require('./constants')
+const { ErrorHandler } = require('../../error')
 
 module.exports = {
   getAllComments: async () =>
@@ -8,10 +8,9 @@ module.exports = {
 
   getAllCommentsForArticleById: async (articleId) => {
     if (!articleId) {
-      throw customExposedError(
-        STATUS_CODES.BAD_REQUEST,
-        'Article cannot be empty'
-      )
+      throw new ErrorHandler('Article cannot be empty', {
+        expose: true
+      })
     }
     return db(TABLES.COMMENTS)
       .where({ article_id: articleId })
@@ -30,19 +29,19 @@ module.exports = {
   createComment: async (articleId, userId, commentText, parentId) => {
     const parentCommentId = parentId === undefined ? null : parentId
     if (!articleId) {
-      throw customExposedError(
-        STATUS_CODES.BAD_REQUEST,
-        'Article cannot be empty'
-      )
+      throw new ErrorHandler('Article cannot be empty', {
+        expose: true
+      })
     }
     if (!userId) {
-      throw customExposedError(STATUS_CODES.BAD_REQUEST, 'User cannot be empty')
+      throw new ErrorHandler('User cannot be empty', {
+        expose: true
+      })
     }
     if (!commentText) {
-      throw customExposedError(
-        STATUS_CODES.BAD_REQUEST,
-        'Comment text cannot be empty'
-      )
+      throw new ErrorHandler('Comment text cannot be empty', {
+        expose: true
+      })
     }
     return db(TABLES.COMMENTS)
       .insert({
@@ -63,10 +62,9 @@ module.exports = {
 
   updateComment: async (commentId, commentText, articleId, userId) => {
     if (!commentText) {
-      throw customExposedError(
-        STATUS_CODES.BAD_REQUEST,
-        'Comment text cannot be empty'
-      )
+      throw new ErrorHandler('Comment text cannot be empty', {
+        expose: true
+      })
     }
     const whereFields = {
       comment_id: commentId,

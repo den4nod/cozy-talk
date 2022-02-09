@@ -1,6 +1,6 @@
 const db = require('../../services/db')
-const { TABLES, STATUS_CODES } = require('./constants')
-const { customExposedError } = require('../../error')
+const { TABLES } = require('./constants')
+const { ErrorHandler } = require('../../error')
 
 module.exports = {
   getAllAvatars: async () => db(TABLES.AVATARS),
@@ -10,7 +10,9 @@ module.exports = {
 
   getUserAvatarById: async (userId) => {
     if (!userId) {
-      throw customExposedError(STATUS_CODES.BAD_REQUEST, 'Invalid user')
+      throw new ErrorHandler('Invalid user', {
+        expose: true
+      })
     }
     return db(TABLES.USERS)
       .where({ user_id: userId })
@@ -21,10 +23,14 @@ module.exports = {
 
   createUserAvatar: async (userId, avatarPath) => {
     if (!userId) {
-      throw customExposedError(STATUS_CODES.BAD_REQUEST, 'Invalid user')
+      throw new ErrorHandler('Invalid user', {
+        expose: true
+      })
     }
     if (!avatarPath) {
-      throw customExposedError(STATUS_CODES.BAD_REQUEST, 'Invalid avatar')
+      throw new ErrorHandler('Invalid avatar', {
+        expose: true
+      })
     }
     return db(TABLES.AVATARS)
       .insert({ avatar_path: avatarPath })

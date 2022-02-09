@@ -6,9 +6,8 @@ const avatarsService = require('../services/store/avatars.service')
 const upload = require('../services/store/imageUpload')
 const { STATUS_CODES } = require('../services/store/constants')
 const { s3Bucket, s3 } = require('../services/s3Config')
-
 const asyncErrorHandlingMiddleware = require('../middlewares/asyncErrorHandlingMiddleware')
-const { customExposedError } = require('../error')
+const { ErrorHandler } = require('../error')
 
 const router = express.Router()
 const jsonParser = bodyParser.json()
@@ -92,10 +91,9 @@ router.get(
     const params = { Bucket: s3Bucket, Key: avatars[0].avatar_path }
     s3.getObject(params, (err, data) => {
       if (err) {
-        throw customExposedError(
-          STATUS_CODES.BAD_REQUEST,
-          'Failed to retrieve image'
-        )
+        throw new ErrorHandler('Failed to retrieve image', {
+          expose: true
+        })
       }
       res.writeHead(STATUS_CODES.SUCCESS, { 'Content-Type': 'image/jpeg' })
       res.write(data.Body, 'binary')
@@ -112,7 +110,9 @@ router.post(
     const singleUpload = upload.single('avatar')
     singleUpload(req, res, async function (err) {
       if (err) {
-        throw customExposedError(STATUS_CODES.BAD_REQUEST, 'Image upload error')
+        throw new ErrorHandler('Image upload error', {
+          expose: true
+        })
       }
       const { key } = req.file
       res.json(await avatarsService.createUserAvatar(id, key))
