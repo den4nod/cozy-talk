@@ -1,8 +1,8 @@
 const { STATUS_CODES, CONSOLE_COLORS } = require('./services/store/constants')
 
 const handleError = (err, res) => {
-  const { message, someProps } = err
-  if (someProps && someProps.expose) {
+  const { message, props } = err
+  if (props && props.expose) {
     res.status(STATUS_CODES.BAD_REQUEST).json({
       status: 'error',
       message
@@ -24,10 +24,10 @@ const logError = (err, req) => {
 }
 
 class ErrorHandler extends Error {
-  constructor(message, someProps) {
+  constructor(message, props) {
     super(message)
     this.message = message
-    this.someProps = someProps
+    this.props = props
   }
 }
 
