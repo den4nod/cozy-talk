@@ -1,11 +1,6 @@
 const db = require('../../services/db')
-const {
-  TABLES,
-  errorJsonResponse,
-  successJsonResponse,
-  apiResponse,
-  STATUS_CODES
-} = require('./constants')
+const { TABLES, STATUS_CODES } = require('./constants')
+const { customExposedError } = require('../../error')
 
 module.exports = {
   getAllComments: async () =>
@@ -13,21 +8,14 @@ module.exports = {
 
   getAllCommentsForArticleById: async (articleId) => {
     if (!articleId) {
-      return apiResponse(
+      throw customExposedError(
         STATUS_CODES.BAD_REQUEST,
-        errorJsonResponse('Article cannot be empty')
+        'Article cannot be empty'
       )
     }
     return db(TABLES.COMMENTS)
       .where({ article_id: articleId })
       .orderBy('date_edited', 'desc')
-      .then((result) => apiResponse(STATUS_CODES.SUCCESS, result))
-      .catch(() =>
-        apiResponse(
-          STATUS_CODES.BAD_REQUEST,
-          errorJsonResponse('Failed to return comments')
-        )
-      )
   },
 
   getCommentBy: async (commentId, articleId, userId) => {
@@ -36,35 +24,24 @@ module.exports = {
       ...(articleId && { article_id: articleId }),
       ...(userId && { user_id: userId })
     }
-    return db(TABLES.COMMENTS)
-      .where(whereFields)
-      .then((result) => apiResponse(STATUS_CODES.SUCCESS, result))
-      .catch(() =>
-        apiResponse(
-          STATUS_CODES.BAD_REQUEST,
-          errorJsonResponse('Failed to return comment')
-        )
-      )
+    return db(TABLES.COMMENTS).where(whereFields)
   },
 
   createComment: async (articleId, userId, commentText, parentId) => {
     const parentCommentId = parentId === undefined ? null : parentId
     if (!articleId) {
-      return apiResponse(
+      throw customExposedError(
         STATUS_CODES.BAD_REQUEST,
-        errorJsonResponse('Article cannot be empty')
+        'Article cannot be empty'
       )
     }
     if (!userId) {
-      return apiResponse(
-        STATUS_CODES.BAD_REQUEST,
-        errorJsonResponse('User cannot be empty')
-      )
+      throw customExposedError(STATUS_CODES.BAD_REQUEST, 'User cannot be empty')
     }
     if (!commentText) {
-      return apiResponse(
+      throw customExposedError(
         STATUS_CODES.BAD_REQUEST,
-        errorJsonResponse('Comment text cannot be empty')
+        'Comment text cannot be empty'
       )
     }
     return db(TABLES.COMMENTS)
@@ -80,24 +57,15 @@ module.exports = {
             parent_comment_id: parentCommentId,
             child_comment_id: id[0]
           })
-          .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
-          .catch((error) =>
-            apiResponse(
-              STATUS_CODES.BAD_REQUEST,
-              errorJsonResponse(error.message)
-            )
-          )
+          .then(() => {})
       })
-      .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
-      )
   },
 
   updateComment: async (commentId, commentText, articleId, userId) => {
     if (!commentText) {
-      return apiResponse(
+      throw customExposedError(
         STATUS_CODES.BAD_REQUEST,
-        errorJsonResponse('Comment text cannot be empty')
+        'Comment text cannot be empty'
       )
     }
     const whereFields = {
@@ -108,10 +76,7 @@ module.exports = {
     return db(TABLES.COMMENTS)
       .where(whereFields)
       .update({ comment_text: commentText })
-      .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
-      .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
-      )
+      .then(() => {})
   },
 
   deleteComment: async (commentId, articleId, userId) => {
@@ -123,9 +88,6 @@ module.exports = {
     return db(TABLES.COMMENTS)
       .where(whereFields)
       .del()
-      .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
-      .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
-      )
+      .then(() => {})
   }
 }

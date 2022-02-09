@@ -1,63 +1,30 @@
 const db = require('../../services/db')
-const {
-  TABLES,
-  errorJsonResponse,
-  successJsonResponse,
-  apiResponse,
-  STATUS_CODES
-} = require('./constants')
+const { TABLES, STATUS_CODES } = require('./constants')
+const { customExposedError } = require('../../error')
 
 module.exports = {
   getAllAvatars: async () => db(TABLES.AVATARS),
 
   getAvatarById: async (avatarId) =>
-    db(TABLES.AVATARS)
-      .where({ avatar_id: avatarId })
-      .then((result) => apiResponse(STATUS_CODES.SUCCESS, result))
-      .catch(() =>
-        apiResponse(
-          STATUS_CODES.BAD_REQUEST,
-          errorJsonResponse('Avatar does not exist')
-        )
-      ),
+    db(TABLES.AVATARS).where({ avatar_id: avatarId }),
 
   getUserAvatarById: async (userId) => {
     if (!userId) {
-      return apiResponse(
-        STATUS_CODES.BAD_REQUEST,
-        errorJsonResponse('Invalid user')
-      )
+      throw customExposedError(STATUS_CODES.BAD_REQUEST, 'Invalid user')
     }
     return db(TABLES.USERS)
       .where({ user_id: userId })
       .then((user) =>
-        db(TABLES.AVATARS)
-          .where({ avatar_id: user[0].avatar_id })
-          .then((avatar) => apiResponse(STATUS_CODES.SUCCESS, avatar))
-          .catch((error) =>
-            apiResponse(
-              STATUS_CODES.BAD_REQUEST,
-              errorJsonResponse(error.message)
-            )
-          )
-      )
-      .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
+        db(TABLES.AVATARS).where({ avatar_id: user[0].avatar_id })
       )
   },
 
   createUserAvatar: async (userId, avatarPath) => {
     if (!userId) {
-      return apiResponse(
-        STATUS_CODES.BAD_REQUEST,
-        errorJsonResponse('Invalid user')
-      )
+      throw customExposedError(STATUS_CODES.BAD_REQUEST, 'Invalid user')
     }
     if (!avatarPath) {
-      return apiResponse(
-        STATUS_CODES.BAD_REQUEST,
-        errorJsonResponse('Invalid avatar')
-      )
+      throw customExposedError(STATUS_CODES.BAD_REQUEST, 'Invalid avatar')
     }
     return db(TABLES.AVATARS)
       .insert({ avatar_path: avatarPath })
@@ -66,16 +33,7 @@ module.exports = {
         db(TABLES.USERS)
           .where({ user_id: userId })
           .update({ avatar_id: avatarId[0] })
-          .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
-          .catch((error) =>
-            apiResponse(
-              STATUS_CODES.BAD_REQUEST,
-              errorJsonResponse(error.message)
-            )
-          )
-      )
-      .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
+          .then(() => {})
       )
   },
 
@@ -83,8 +41,5 @@ module.exports = {
     db(TABLES.AVATARS)
       .where({ avatar_id: avatarId })
       .del()
-      .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
-      .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
-      )
+      .then(() => {})
 }

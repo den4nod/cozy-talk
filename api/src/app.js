@@ -10,6 +10,7 @@ const avatars = require('./routes/avatars')
 const requestLoggerMiddleware = require('./middlewares/requestLoggerMiddleware')
 const dbConfig = require('./services/db')
 const targetTableName = require('./services/logConfig')
+const errorHandlingMiddleware = require('./middlewares/errorHandlingMiddleware')
 
 const app = express()
 
@@ -26,4 +27,5 @@ app.use('/comments', comments)
 app.use('/likes', likes)
 app.use('/avatars', avatars)
 
+app.use(errorHandlingMiddleware)
 app.listen(config.appPort)
