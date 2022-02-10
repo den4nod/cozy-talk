@@ -1,80 +1,53 @@
 const db = require('../../services/db')
-const {
-  TABLES,
-  errorJsonResponse,
-  successJsonResponse,
-  apiResponse,
-  STATUS_CODES
-} = require('./constants')
+const { TABLES } = require('./constants')
+const { ErrorHandler } = require('../../error')
 
 module.exports = {
   getAllUsers: async () => db(TABLES.USERS).orderBy('name'),
 
-  getUserById: async (userId) =>
-    db(TABLES.USERS)
-      .where({ user_id: userId })
-      .then((result) => apiResponse(STATUS_CODES.SUCCESS, result))
-      .catch(() =>
-        apiResponse(
-          STATUS_CODES.BAD_REQUEST,
-          errorJsonResponse(`User does not exist`)
-        )
-      ),
+  getUserById: async (userId) => db(TABLES.USERS).where({ user_id: userId }),
 
   createUser: async (name, email, phone) => {
     if (!name) {
-      return apiResponse(
-        STATUS_CODES.BAD_REQUEST,
-        errorJsonResponse('Name cannot be empty')
-      )
+      throw new ErrorHandler('Name cannot be empty', {
+        expose: true
+      })
     }
     if (!email) {
-      return apiResponse(
-        STATUS_CODES.BAD_REQUEST,
-        errorJsonResponse('Email cannot be empty')
-      )
+      throw new ErrorHandler('Email cannot be empty', {
+        expose: true
+      })
     }
     if (!phone) {
-      return apiResponse(
-        STATUS_CODES.BAD_REQUEST,
-        errorJsonResponse('Phone cannot be empty')
-      )
+      throw new ErrorHandler('Phone cannot be empty', {
+        expose: true
+      })
     }
     return db(TABLES.USERS)
       .insert({ name: name, email: email, phone: phone })
-      .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
-      .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
-      )
+      .then(() => {})
   },
 
   updateUserById: async (userId, name, email, phone) => {
     if (!name && !email && !phone) {
-      return apiResponse(
-        STATUS_CODES.BAD_REQUEST,
-        errorJsonResponse('Nothing to update')
-      )
+      throw new ErrorHandler('Nothing to update', {
+        expose: true
+      })
     }
     const updateFields = {
       ...(name && { name: name }),
       ...(email && { email: email }),
       ...(phone && { phone: phone })
     }
-    await db(TABLES.USERS)
+    return await db(TABLES.USERS)
       .where({ user_id: userId })
       .update(updateFields)
-      .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
-      .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
-      )
+      .then(() => {})
   },
 
   deleteUserById: async (userId) =>
     db(TABLES.USERS)
       .where({ user_id: userId })
       .del()
-      .then(() => apiResponse(STATUS_CODES.SUCCESS, successJsonResponse))
-      .catch((error) =>
-        apiResponse(STATUS_CODES.BAD_REQUEST, errorJsonResponse(error.message))
-      )
+      .then(() => {})
 }

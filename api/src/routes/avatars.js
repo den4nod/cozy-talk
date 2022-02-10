@@ -1,22 +1,30 @@
 const express = require('express')
 const avatarsService = require('../services/store/avatars.service')
+const asyncErrorHandlingMiddleware = require('../middlewares/asyncErrorHandlingMiddleware')
 
 const router = express.Router()
 
-router.get('/', async function (req, res) {
-  res.json(await avatarsService.getAllAvatars())
-})
+router.get(
+  '/',
+  asyncErrorHandlingMiddleware(async function (req, res, next) {
+    res.json(await avatarsService.getAllAvatars())
+  })
+)
 
-router.get('/:avatarId', async function (req, res) {
-  const { avatarId } = req.params
-  const result = await avatarsService.getAvatarById(avatarId)
-  res.status(result.status).json(result.jsonPayload)
-})
+router.get(
+  '/:avatarId',
+  asyncErrorHandlingMiddleware(async function (req, res, next) {
+    const { avatarId } = req.params
+    res.json(await avatarsService.getAvatarById(avatarId))
+  })
+)
 
-router.delete('/:avatarId', async function (req, res) {
-  const { avatarId } = req.params
-  const result = await avatarsService.deleteAvatarById(avatarId)
-  res.status(result.status).json(result.jsonPayload)
-})
+router.delete(
+  '/:avatarId',
+  asyncErrorHandlingMiddleware(async function (req, res, next) {
+    const { avatarId } = req.params
+    res.json(await avatarsService.deleteAvatarById(avatarId))
+  })
+)
 
 module.exports = router

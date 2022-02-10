@@ -2,82 +2,104 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const articlesService = require('../services/store/articles.service')
 const commentsService = require('../services/store/comments.service')
+const asyncErrorHandlingMiddleware = require('../middlewares/asyncErrorHandlingMiddleware')
 
 const router = express.Router()
 const jsonParser = bodyParser.json()
 
-router.get('/', async function (req, res) {
-  res.json(await articlesService.getAllArticles())
-})
+router.get(
+  '/',
+  asyncErrorHandlingMiddleware(async function (req, res, next) {
+    res.json(await articlesService.getAllArticles())
+  })
+)
 
-router.post('/', jsonParser, async function (req, res) {
-  const { articleBody, userId } = req.body
-  const result = await articlesService.createArticle(articleBody, userId)
-  res.status(result.status).json(result.jsonPayload)
-})
+router.post(
+  '/',
+  jsonParser,
+  asyncErrorHandlingMiddleware(async function (req, res, next) {
+    const { articleBody, userId } = req.body
+    res.json(await articlesService.createArticle(articleBody, userId))
+  })
+)
 
-router.get('/:articleId', async function (req, res) {
-  const { articleId } = req.params
-  const result = await articlesService.getArticleById(articleId)
-  res.status(result.status).json(result.jsonPayload)
-})
+router.get(
+  '/:articleId',
+  asyncErrorHandlingMiddleware(async function (req, res, next) {
+    const { articleId } = req.params
+    res.json(await articlesService.getArticleById(articleId))
+  })
+)
 
-router.put('/:articleId', jsonParser, async function (req, res) {
-  const { articleId } = req.params
-  const { articleBody } = req.body
-  const result = await articlesService.updateArticleById(articleId, articleBody)
-  res.status(result.status).json(result.jsonPayload)
-})
+router.put(
+  '/:articleId',
+  jsonParser,
+  asyncErrorHandlingMiddleware(async function (req, res, next) {
+    const { articleId } = req.params
+    const { articleBody } = req.body
+    res.json(await articlesService.updateArticleById(articleId, articleBody))
+  })
+)
 
-router.delete('/:articleId', async function (req, res) {
-  const { articleId } = req.params
-  const result = await articlesService.deleteArticleById(articleId)
-  res.status(result.status).json(result.jsonPayload)
-})
+router.delete(
+  '/:articleId',
+  asyncErrorHandlingMiddleware(async function (req, res, next) {
+    const { articleId } = req.params
+    res.json(await articlesService.deleteArticleById(articleId))
+  })
+)
 
-router.get('/:articleId/comments', async function (req, res) {
-  const { articleId } = req.params
-  const result = await commentsService.getAllCommentsForArticleById(articleId)
-  res.status(result.status).json(result.jsonPayload)
-})
+router.get(
+  '/:articleId/comments',
+  asyncErrorHandlingMiddleware(async function (req, res, next) {
+    const { articleId } = req.params
+    res.json(await commentsService.getAllCommentsForArticleById(articleId))
+  })
+)
 
-router.post('/:articleId/comments', jsonParser, async function (req, res) {
-  const { articleId } = req.params
-  const { userId, commentText, parentId } = req.body
-  const result = await commentsService.createComment(
-    articleId,
-    userId,
-    commentText,
-    parentId
-  )
-  res.status(result.status).json(result.jsonPayload)
-})
+router.post(
+  '/:articleId/comments',
+  jsonParser,
+  asyncErrorHandlingMiddleware(async function (req, res, next) {
+    const { articleId } = req.params
+    const { userId, commentText, parentId } = req.body
+    res.json(
+      await commentsService.createComment(
+        articleId,
+        userId,
+        commentText,
+        parentId
+      )
+    )
+  })
+)
 
-router.get('/:articleId/comments/:commentId', async function (req, res) {
-  const { articleId, commentId } = req.params
-  const result = await commentsService.getCommentBy(commentId, articleId)
-  res.status(result.status).json(result.jsonPayload)
-})
+router.get(
+  '/:articleId/comments/:commentId',
+  asyncErrorHandlingMiddleware(async function (req, res, next) {
+    const { articleId, commentId } = req.params
+    res.json(await commentsService.getCommentBy(commentId, articleId))
+  })
+)
 
 router.put(
   '/:articleId/comments/:commentId',
   jsonParser,
-  async function (req, res) {
+  asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { articleId, commentId } = req.params
     const { commentText } = req.body
-    const result = await commentsService.updateComment(
-      commentId,
-      commentText,
-      articleId
+    res.json(
+      await commentsService.updateComment(commentId, commentText, articleId)
     )
-    res.status(result.status).json(result.jsonPayload)
-  }
+  })
 )
 
-router.delete('/:articleId/comments/:commentId', async function (req, res) {
-  const { articleId, commentId } = req.params
-  const result = await commentsService.deleteComment(commentId, articleId)
-  res.status(result.status).json(result.jsonPayload)
-})
+router.delete(
+  '/:articleId/comments/:commentId',
+  asyncErrorHandlingMiddleware(async function (req, res, next) {
+    const { articleId, commentId } = req.params
+    res.json(await commentsService.deleteComment(commentId, articleId))
+  })
+)
 
 module.exports = router

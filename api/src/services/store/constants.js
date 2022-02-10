@@ -9,16 +9,13 @@ module.exports = {
   },
   STATUS_CODES: {
     SUCCESS: 200,
-    BAD_REQUEST: 400
+    BAD_REQUEST: 400,
+    INTERNAL_SERVER_ERROR: 500
   },
-  successJsonResponse: { status: 'success' },
-  errorJsonResponse: (error) => {
-    return { error: error }
-  },
-  apiResponse: (status, jsonPayload) => {
-    return {
-      status: status,
-      jsonPayload: jsonPayload
-    }
+  CONSOLE_COLORS: {
+    ERROR: '\x1b[31m%s\x1b[0m',
+    WARNING: '\x1b[33m%s\x1b[0m',
+    INFO: '\x1b[36m%s\x1b[0m',
+    SUCCESS: '\x1b[32m%s\x1b[0m'
   }
 }
