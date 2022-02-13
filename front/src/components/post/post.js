@@ -8,10 +8,10 @@ import { useState } from 'react'
 import { EDIT_ARTICLE_PAGE_TITLE } from '../../constants'
 import ArticleFormContainer from '../../containers/forms/articleForm'
 
-export function Post({ postId, postBody, dateCreated }) {
+export function Post({ articleInfo, dateCreated }) {
+
   const [isEditing, setIsEditing] = useState(false)
-  const [articleId, setArticleId] = useState(postId)
-  const [articleBody, setArticleBody] = useState(postBody)
+  const [article, setArticle] = useState(articleInfo)
 
   const setUnderEdition = () => {
     setIsEditing(true)
@@ -23,7 +23,7 @@ export function Post({ postId, postBody, dateCreated }) {
         <Card variant='outlined'>
           <CardContent>
             <Typography gutterBottom variant='h5' component='div'>
-              {articleBody}
+              {articleInfo.article_body}
             </Typography>
             <Typography variant='body2' color='text.secondary'>
               {dateCreated}
@@ -35,9 +35,8 @@ export function Post({ postId, postBody, dateCreated }) {
         </Card>
       </Container>}
       {isEditing === true && <ArticleFormContainer
-        articleId={articleId}
-        articleBody={articleBody}
-        updateArticleBody={setArticleBody}
+        article={article}
+        setArticle={setArticle}
         updateIsEditing={setIsEditing}
         pageTitle={EDIT_ARTICLE_PAGE_TITLE}
       />}
@@ -46,7 +45,15 @@ export function Post({ postId, postBody, dateCreated }) {
 }
 
 Post.propTypes = {
-  postBody: PropTypes.string.isRequired,
+  articleInfo: PropTypes.shape({
+    article_id: PropTypes.string,
+    article_body: PropTypes.string,
+    user_id: PropTypes.string,
+    article_image_path: PropTypes.string,
+    article_visibility_status_id: PropTypes.number,
+    date_created: PropTypes.string,
+    date_edited: PropTypes.string
+  }),
   dateCreated: PropTypes.string
 }
 
