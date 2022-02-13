@@ -18,8 +18,16 @@ router.post(
   '/',
   jsonParser,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
-    const { articleBody, userId } = req.body
-    res.json(await articlesService.createArticle(articleBody, userId))
+    const { articleBody, userId, articleImagePath, articleVisibilityStatusId } =
+      req.body
+    res.json(
+      await articlesService.createArticle(
+        articleBody,
+        userId,
+        articleImagePath,
+        articleVisibilityStatusId
+      )
+    )
   })
 )
 
@@ -36,8 +44,16 @@ router.put(
   jsonParser,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { articleId } = req.params
-    const { articleBody } = req.body
-    res.json(await articlesService.updateArticleById(articleId, articleBody))
+    const { articleBody, articleImagePath, articleVisibilityStatusId } =
+      req.body
+    res.json(
+      await articlesService.updateArticleById(
+        articleId,
+        articleBody,
+        articleImagePath,
+        articleVisibilityStatusId
+      )
+    )
   })
 )
 
