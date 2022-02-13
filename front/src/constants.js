@@ -1,4 +1,5 @@
 import { createTheme } from '@mui/material'
+import PropTypes from 'prop-types'
 
 export const ARTICLES_PAGE = 'articles'
 export const ARTICLES_PAGE_TITLE = 'Articles'
@@ -20,7 +21,7 @@ export const theme = createTheme({
   palette: {
     neutral: {
       main: '#64748B',
-      contrastText: '#fff',
+      contrastText: '#fff'
     }
   }
 })
@@ -32,7 +33,13 @@ export const availabilityStatuses = [
 ]
 
 export const universities = [
-  { name: 'Sumy State University', id: 1 },
-  { name: 'Igor Sikorsky Kyiv Polytechnic Institute', id: 2 },
-  { name: 'Sumy National Agrarian University', id: 3 }
+  { id: 1, label: 'Sumy State University', value: 'SumyStateUniversity' },
+  { id: 2, label: 'Igor Sikorsky Kyiv Polytechnic Institute', value: 'IgorSikorskyKyivPolytechnicInstitute' },
+  { id: 3, label: 'Sumy National Agrarian University', value: 'SumyNationalAgrarianUniversity' }
 ]
+
+export const autocompleteOptionPropTypes = PropTypes.shape({
+  id: PropTypes.number,
+  value: PropTypes.string,
+  label: PropTypes.string
+})

@@ -5,7 +5,7 @@ import { createArticle, updateArticle } from '../post/api/articlesCrud'
 import { availabilityStatuses, theme } from '../../constants'
 import PropTypes from 'prop-types'
 
-const ArticleFormContainer = ({pageTitle, articleId, articleBody, updateArticleBody, updateIsEditing}) => {
+const ArticleFormContainer = ({ pageTitle, articleId, articleBody, updateArticleBody, updateIsEditing }) => {
 
   const mutation = articleId ?
     useMutation((article) =>
@@ -15,7 +15,7 @@ const ArticleFormContainer = ({pageTitle, articleId, articleBody, updateArticleB
         updateArticleBody(article.articleBody)
         updateIsEditing(false)
       }
-    }) : 
+    }) :
     useMutation((article) => createArticle(article))
 
   const stopEditionOnCancel = () => {
@@ -36,11 +36,11 @@ const ArticleFormContainer = ({pageTitle, articleId, articleBody, updateArticleB
 
   const schema = yup.object().shape({
     article: yup.string().required('Article text is required'),
-    article_availability: yup.string().required('Availability status is required')
+    article_availability: yup.object().required('Availability status is required')
   })
 
   const defaultAvailabilityStatusValue = availabilityStatuses
-    .find(status => status.label.toLowerCase() === 'all').value;
+    .find(status => status.label.toLowerCase() === 'all')
 
   const setInitialValues = (article, availabilityStatus) => {
     return {
