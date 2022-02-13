@@ -8,3 +8,7 @@ export const getUsers = async () => {
 export const getUserById = async (userId) => {
   return apiClient.get(API_ENDPOINTS.USERS + `/${userId}`)
 }
+
+export const updateUser = async (userId, user) => {
+  return apiClient.put(`${API_ENDPOINTS.USERS}/${userId}`, user)
+}

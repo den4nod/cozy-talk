@@ -23,13 +23,10 @@ const UsersContainer = () => {
       ) : isError ? (
         <Error title={error.message} />
       ) : (
-        users.map(({ user_id, name, email, phone }) => (
+        users.map((user) => (
           <User
-            key={user_id}
-            userId={user_id}
-            name={name}
-            email={email}
-            phone={phone}
+            key={user.user_id}
+            userInfo={user}
           />)
         )
       )}

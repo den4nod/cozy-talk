@@ -6,11 +6,21 @@ import PropTypes from 'prop-types'
 import Button from '@mui/material/Button'
 import { useNavigate } from 'react-router-dom'
 import { API_ENDPOINTS } from '../../constants'
+import { useState } from 'react'
+import UserFormContainer from '../../containers/forms/userForm'
 
-export function User({ userId, name, email, phone, userDetails }) {
+export function User({ userInfo, userDetails }) {
+
+  const [user, setUser] = useState(userInfo)
+  const [isEditing, setIsEditing] = useState(false)
 
   const BUTTON_TEXT = {
-    USER_DETAILS: 'Details'
+    USER_DETAILS: 'Details',
+    USER_UPDATE: 'Update'
+  }
+
+  const setUnderEdition = () => {
+    setIsEditing(true)
   }
 
   const navigate = useNavigate()
@@ -24,57 +34,77 @@ export function User({ userId, name, email, phone, userDetails }) {
   }
 
   return (
-    <Container maxWidth='sm' sx={{ textAlign: 'center', mt: 2 }}>
-      <Card variant='outlined'>
-        <CardContent>
-          <Stack direction='row' spacing={1} sx={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            mb: 1
-          }}>
-            <Avatar sx={{
+    <>
+      {isEditing === false && <Container maxWidth='sm' sx={{ textAlign: 'center', mt: 2 }}>
+        <Card variant='outlined'>
+          <CardContent>
+            <Stack direction='row' spacing={1} sx={{
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center'
+              alignItems: 'center',
+              mb: 1
             }}>
-              {resolveFirstLetterFrom(name)}
-            </Avatar>
-            <Typography gutterBottom variant='h5' component='div'>
-              {name}
+              <Avatar sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+              }}>
+                {resolveFirstLetterFrom(name)}
+              </Avatar>
+              <Typography gutterBottom variant='h5' component='div'>
+                {user.name}
+              </Typography>
+            </Stack>
+            <Typography variant='body2' pb={1}>
+              {user.email}
             </Typography>
-          </Stack>
-          <Typography variant='body2' pb={1}>
-            {email}
-          </Typography>
-          <Typography variant='body2'>
-            {phone}
-          </Typography>
-        </CardContent>
-        {!!userDetails === false &&
-          <CardActions sx={{
-            display: 'flex',
-            justifyContent: 'flex-end',
-            alignItems: 'flex-end'
-          }}>
-            <Button size='small' onClick={redirectToUserPage(userId)}>
-              {BUTTON_TEXT.USER_DETAILS}
-            </Button>
-          </CardActions>}
-      </Card>
-    </Container>
+            <Typography variant='body2'>
+              {user.phone}
+            </Typography>
+          </CardContent>
+          {!!userDetails === false &&
+            <CardActions sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end'
+            }}>
+              <Button size='small' onClick={redirectToUserPage(user.user_id)}>
+                {BUTTON_TEXT.USER_DETAILS}
+              </Button>
+            </CardActions>}
+          {!!userDetails === true &&
+            <CardActions sx={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              alignItems: 'flex-end'
+            }}>
+              <Button size='small' onClick={setUnderEdition}>
+                {BUTTON_TEXT.USER_UPDATE}
+              </Button>
+            </CardActions>}
+        </Card>
+      </Container>}
+      {isEditing === true && <UserFormContainer
+        user={user}
+        setUser={setUser}
+        userId={userInfo.user_id}
+        setIsEditing={setIsEditing}
+      />}
+    </>
+
   )
 }
 
 User.propTypes = {
-  userId: PropTypes.string.isRequired,
-  name: PropTypes.string.isRequired,
-  email: PropTypes.string.isRequired,
-  phone: PropTypes.string,
+  userInfo: PropTypes.shape({
+    user_id: PropTypes.string,
+    name: PropTypes.string,
+    email: PropTypes.string,
+    phone: PropTypes.string,
+  }).isRequired,
   userDetails: PropTypes.bool
 }
 
 User.defaultProps = {
-  phone: '',
   userDetails: false
 }

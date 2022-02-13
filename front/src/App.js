@@ -28,7 +28,6 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { UsersPage } from './components/users/usersPage'
 import { UserPage } from './components/users/userPage'
 import ArticleFormContainer from './containers/forms/articleForm'
-import UserFormContainer from './containers/forms/userForm'
 
 function App() {
 
@@ -79,7 +78,6 @@ function App() {
             <Route path='/post/*' element={<NotFound />} />
             <Route path='/date/:date' element={<DateRouteContainer />} />
             <Route path='/date/*' element={<NotFound />} />
-            <Route path='/userForm' element={<UserFormContainer />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
         </BrowserRouter>
