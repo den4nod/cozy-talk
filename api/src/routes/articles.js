@@ -3,6 +3,8 @@ const bodyParser = require('body-parser')
 const articlesService = require('../services/store/articles.service')
 const commentsService = require('../services/store/comments.service')
 const asyncErrorHandlingMiddleware = require('../middlewares/asyncErrorHandlingMiddleware')
+const { articleImageUpload } = require('../services/store/imageUpload')
+const { ErrorHandler } = require('../error')
 
 const router = express.Router()
 const jsonParser = bodyParser.json()
@@ -28,6 +30,58 @@ router.post(
         articleVisibilityStatusId
       )
     )
+  })
+)
+
+router.post(
+  '/form',
+  asyncErrorHandlingMiddleware(async function (req, res, next) {
+    const singleUpload = articleImageUpload.single('articleImage')
+    singleUpload(req, res, async function (err) {
+      if (err) {
+        throw new ErrorHandler('Image upload error', {
+          expose: true
+        })
+      }
+      const { articleBody, userId, articleVisibilityStatusId } = req.body
+      const { key } = req.file
+
+      res.json(
+        await articlesService.createArticle(
+          articleBody,
+          userId,
+          key,
+          articleVisibilityStatusId
+        )
+      )
+    })
+  })
+)
+
+router.put(
+  '/form/:articleId',
+  asyncErrorHandlingMiddleware(async function (req, res, next) {
+    const { articleId } = req.params
+    const singleUpload = articleImageUpload.single('articleImage')
+    singleUpload(req, res, async function (err) {
+      if (err) {
+        throw new ErrorHandler('Image upload error', {
+          expose: true
+        })
+      }
+      const { articleBody, userId, articleVisibilityStatusId } = req.body
+      const { key } = req.file
+
+      res.json(
+        await articlesService.updateArticleById(
+          articleId,
+          articleBody,
+          userId,
+          key,
+          articleVisibilityStatusId
+        )
+      )
+    })
   })
 )
 

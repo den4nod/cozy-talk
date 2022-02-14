@@ -1,7 +1,7 @@
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
-import { CardActions, Container } from '@mui/material'
+import { CardActions, CardMedia, Container } from '@mui/material'
 import PropTypes from 'prop-types'
 import Button from '@mui/material/Button'
 import { useState } from 'react'
@@ -22,8 +22,18 @@ export function Post({ articleInfo, dateCreated }) {
       {isEditing === false && <Container maxWidth='sm' sx={{ textAlign: 'center', mb: 2 }}>
         <Card variant='outlined'>
           <CardContent>
+            {article.article_image_path && <CardMedia
+              component='img'
+              style={{
+                width: 'auto',
+                maxHeight: '200px',
+                margin: 'auto'
+              }}
+              image={`http://localhost:3090/files?img=${article.article_image_path}`}
+              alt='Article image'
+            />}
             <Typography gutterBottom variant='h5' component='div'>
-              {articleInfo.article_body}
+              {article.article_body}
             </Typography>
             <Typography variant='body2' color='text.secondary'>
               {dateCreated}

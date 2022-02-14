@@ -1,10 +1,12 @@
 import { Form, Formik, Field } from 'formik'
 import Button from '@mui/material/Button'
 import { TextField } from 'formik-mui'
-import { Box, Grid, Paper, ThemeProvider, Typography } from '@mui/material'
+import { Box, CardMedia, Grid, Paper, ThemeProvider, Typography } from '@mui/material'
 import PropTypes from 'prop-types'
 import FormikAutocomplete from './FormikAutocomplete'
 import { autocompleteOptionPropTypes } from '../../constants'
+import { Cropper } from 'react-cropper'
+import 'cropperjs/dist/cropper.css'
 
 const ArticleForm = ({
   availabilityStatuses,
@@ -15,7 +17,14 @@ const ArticleForm = ({
   onCancel,
   title,
   submitButtonText,
-  showCancel
+  showCancel,
+  image,
+  handleImageChange,
+  setCropper,
+  cropImage,
+  croppedImage,
+  deleteImage,
+  userImage
 }) => {
 
   const STYLE_VALUES = {
@@ -46,6 +55,42 @@ const ArticleForm = ({
                 <Grid item xs={12} mb={STYLE_VALUES.MARGIN_BOTTOM}>
                   <Typography variant='h4' component='div'>{title}</Typography>
                 </Grid>
+                
+                <Grid item xs={12} mb={STYLE_VALUES.MARGIN_BOTTOM}>
+                  <Box>
+                    {userImage && <img src={`http://localhost:3090/files?img=${userImage}`}  alt='Article image' />}
+                  </Box>
+                  <Box>
+                    {croppedImage && <CardMedia
+                      component='img'
+                      style={{
+                        width: 'auto',
+                        maxHeight: '200px',
+                      }}
+                      image={croppedImage}
+                      alt='Article image'
+                    />}
+                  </Box>
+                  <Box>
+                    {!image && <Button variant='contained' component='label' sx={{ mb: 1, mr: 1, mt: 1 }}>
+                    Choose image
+                      <input type='file' hidden onChange={handleImageChange} />
+                    </Button>}
+                    {(image || croppedImage) && <Button variant='contained' onClick={deleteImage} sx={{ mb: 1, mr: 1, mt: 1 }}>Delete image</Button>}
+                    {image && (
+                      <Cropper
+                        src={image}
+                        onInitialized={instance => setCropper(instance)}
+                        rotatable={false}
+                        viewMode={1}
+                      />
+                    )}
+                    {image && (
+                      <Button variant='contained' onClick={cropImage} sx={{ mb: 1, mr: 1, mt: 1 }}>Crop</Button>
+                    )}
+                  </Box>
+                </Grid>
+                
                 <Grid item xs={12} mb={STYLE_VALUES.MARGIN_BOTTOM} height={STYLE_VALUES.TEXT_AREA_HEIGHT}>
                   <Field
                     component={TextField}
@@ -109,7 +154,14 @@ ArticleForm.propTypes = {
   theme: PropTypes.object,
   schema: PropTypes.object,
   onArticleSubmit: PropTypes.func,
-  submitButtonText: PropTypes.string
+  submitButtonText: PropTypes.string,
+  image: PropTypes.string,
+  handleImageChange: PropTypes.func,
+  setCropper: PropTypes.func,
+  cropImage: PropTypes.func,
+  croppedImage: PropTypes.string,
+  deleteImage: PropTypes.func,
+  userImage: PropTypes.string
 }
 
 export default ArticleForm

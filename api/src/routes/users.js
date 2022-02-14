@@ -3,11 +3,11 @@ const bodyParser = require('body-parser')
 const usersService = require('../services/store/users.service')
 const likesService = require('../services/store/likes.service')
 const avatarsService = require('../services/store/avatars.service')
-const upload = require('../services/store/imageUpload')
 const { STATUS_CODES } = require('../services/store/constants')
 const { s3Bucket, s3 } = require('../services/s3Config')
 const asyncErrorHandlingMiddleware = require('../middlewares/asyncErrorHandlingMiddleware')
 const { ErrorHandler } = require('../error')
+const { avatarUpload } = require('../services/store/imageUpload')
 
 const router = express.Router()
 const jsonParser = bodyParser.json()
@@ -107,7 +107,7 @@ router.post(
   jsonParser,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { id } = req.params
-    const singleUpload = upload.single('avatar')
+    const singleUpload = avatarUpload.single('avatar')
     singleUpload(req, res, async function (err) {
       if (err) {
         throw new ErrorHandler('Image upload error', {
