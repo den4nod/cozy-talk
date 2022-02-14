@@ -41,8 +41,29 @@ router.put(
   jsonParser,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { id } = req.params
-    const { name, email, phone } = req.body
-    res.json(await usersService.updateUserById(id, name, email, phone))
+    const {
+      name,
+      nameVisibility,
+      email,
+      emailVisibility,
+      phone,
+      phoneVisibility,
+      university,
+      universityVisibility
+    } = req.body
+    res.json(
+      await usersService.updateUserById(
+        id,
+        name,
+        nameVisibility,
+        email,
+        emailVisibility,
+        phone,
+        phoneVisibility,
+        university,
+        universityVisibility
+      )
+    )
   })
 )
 

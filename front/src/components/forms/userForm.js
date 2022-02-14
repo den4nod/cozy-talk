@@ -1,10 +1,11 @@
-import { Box, FormControl, Grid, Paper, ThemeProvider, Typography } from '@mui/material'
+import { Avatar, Box, CardMedia, FormControl, Grid, Paper, ThemeProvider, Typography } from '@mui/material'
 import { Field, Form, Formik } from 'formik'
 import { TextField } from 'formik-mui'
 import Button from '@mui/material/Button'
 import FormikAutocomplete from './FormikAutocomplete'
 import PropTypes from 'prop-types'
 import { autocompleteOptionPropTypes } from '../../constants'
+import { Cropper } from 'react-cropper'
 
 const UserForm = ({
   availabilityStatuses,
@@ -15,7 +16,15 @@ const UserForm = ({
   theme,
   universities,
   showCancel,
-  onCancel
+  onCancel,
+  image,
+  handleImageChange,
+  setCropper,
+  cropImage,
+  croppedImage,
+  deleteImage,
+  userImage,
+  resolveFirstLetterFrom
 }) => {
 
   const STYLE_VALUES = {
@@ -46,6 +55,50 @@ const UserForm = ({
                 {title && <Grid item xs={12} mb={STYLE_VALUES.MARGIN_BOTTOM}>
                   <Typography variant='h4' component='div'>{title}</Typography>
                 </Grid>}
+                <Grid item xs={12} mb={STYLE_VALUES.MARGIN_BOTTOM}>
+                  <Box>
+                    {userImage && <Avatar src={userImage}  alt='Article image' sx={{ width: 100, height: 100 }} />}
+                    {userImage == null && <Avatar
+                      sx={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        width: 76,
+                        height: 76
+                      }} >
+                      {resolveFirstLetterFrom(initialValues.name)}
+                    </Avatar>}
+                  </Box>
+                  <Box>
+                    {croppedImage && <CardMedia
+                      component='img'
+                      style={{
+                        width: 'auto',
+                        maxHeight: '200px',
+                      }}
+                      image={croppedImage}
+                      alt='Avatar image'
+                    />}
+                  </Box>
+                  <Box>
+                    {!image && <Button variant='contained' component='label' sx={{ mb: 1, mr: 1, mt: 1 }}>
+                      Choose image
+                      <input type='file' hidden onChange={handleImageChange} />
+                    </Button>}
+                    {(image || croppedImage) && <Button variant='contained' onClick={deleteImage} sx={{ mb: 1, mr: 1, mt: 1 }}>Delete image</Button>}
+                    {image && (
+                      <Cropper
+                        src={image}
+                        onInitialized={instance => setCropper(instance)}
+                        rotatable={false}
+                        viewMode={1}
+                      />
+                    )}
+                    {image && (
+                      <Button variant='contained' onClick={cropImage} sx={{ mb: 1, mr: 1, mt: 1 }}>Crop</Button>
+                    )}
+                  </Box>
+                </Grid>
                 <Grid container mb={STYLE_VALUES.MARGIN_BOTTOM} height={STYLE_VALUES.LINE_HEIGHT}>
                   <Grid item xs={8}>
                     <Typography color='text.secondary'>Name</Typography>
@@ -185,7 +238,15 @@ UserForm.propTypes = {
   }),
   theme: PropTypes.object,
   schema: PropTypes.object,
-  onUserUpdate: PropTypes.func.isRequired
+  onUserUpdate: PropTypes.func.isRequired,
+  image: PropTypes.string,
+  handleImageChange: PropTypes.func,
+  setCropper: PropTypes.func,
+  cropImage: PropTypes.func,
+  croppedImage: PropTypes.string,
+  deleteImage: PropTypes.func,
+  userImage: PropTypes.string,
+  resolveFirstLetterFrom: PropTypes.func
 }
 
 export default UserForm

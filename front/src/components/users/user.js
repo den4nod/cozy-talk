@@ -44,13 +44,26 @@ export function User({ userInfo, userDetails }) {
               alignItems: 'center',
               mb: 1
             }}>
-              <Avatar sx={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center'
-              }}>
-                {resolveFirstLetterFrom(name)}
-              </Avatar>
+              {user?.avatar_id && <Avatar
+                src={user ? `http://localhost:3090/avatars/${user.avatar_id}/img` : undefined}
+                alt='Article image'
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: 100,
+                  height: 100
+                }} />}
+              {user?.avatar_id == null && <Avatar
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  width: 76,
+                  height: 76
+                }} >
+                {resolveFirstLetterFrom(user.name)}
+              </Avatar>}
               <Typography gutterBottom variant='h5' component='div'>
                 {user.name}
               </Typography>
@@ -89,6 +102,7 @@ export function User({ userInfo, userDetails }) {
         setUser={setUser}
         userId={userInfo.user_id}
         setIsEditing={setIsEditing}
+        resolveFirstLetterFrom={resolveFirstLetterFrom}
       />}
     </>
 

@@ -2,33 +2,87 @@ import * as yup from 'yup'
 import { availabilityStatuses, theme, universities } from '../../constants'
 import UserForm from '../../components/forms/userForm'
 import { useMutation } from 'react-query'
-import { updateUser } from '../user/api/usersCrud'
+import { updateUser, updateUserAvatar } from '../user/api/usersCrud'
 import PropTypes from 'prop-types'
+import { useState } from 'react'
+import { dataUrlToFile } from '../../utils'
 
-const UserFormContainer = ({ userId, user, setUser, setIsEditing }) => {
+const UserFormContainer = ({ userId, user, setUser, setIsEditing, resolveFirstLetterFrom }) => {
+
+  const [image, setImage] = useState()
+  const [croppedImage, setCroppedImage] = useState()
+  const [cropper, setCropper] = useState()
+
+  const [imgFilename, setImgFilename] = useState('image.jpeg')
+
+  const handleImageChange = e => {
+    e.preventDefault()
+    const file = e.target.files[0]
+
+    if (file.type.match('image.*') && file.size < 10000000) {
+      setImgFilename(file.name)
+      const reader = new FileReader()
+      reader.onload = () => {
+        setImage(reader.result)
+      }
+      reader.readAsDataURL(file)
+    } else {
+      console.error('Wrong file format or size!')
+    }
+  }
+
+  const cropImage = () => {
+    if (typeof cropper !== 'undefined') {
+      setCroppedImage(cropper.getCroppedCanvas().toDataURL())
+      setImage(null)
+    }
+  }
+
+  const deleteImage = () => {
+    setCroppedImage(null)
+    setImage(null)
+  }
 
   const mutation = useMutation((user) =>
     updateUser(userId, user),
   {
     onSuccess: (data, user) => {
-      setUser(user)
+      console.log(user)
+      const updatedArticle = {
+        name: user.name,
+        name_visibility: user.nameVisibility,
+        email: user.email,
+        email_visibility: user.emailVisibility,
+        phone: user.phone,
+        phone_visibility: user.phoneVisibility,
+        university: user.universityVisibility,
+        university_visibility: user.universityVisibility
+      }
+      setUser(updatedArticle)
       setIsEditing(false)
     }
   })
 
+  const avatarMutation = useMutation((avatar) =>
+    updateUserAvatar(userId, avatar)
+  )
+
   const onUserUpdate = (values, { setSubmitting, resetForm }) => {
 
-    const user = {
+    const userPayload = {
       name: values.name,
-      name_visibility: values.name_visibility.value,
+      nameVisibility: values.name_visibility.id,
       email: values.email,
-      email_visibility: values.email_visibility.value,
+      emailVisibility: values.email_visibility.id,
       phone: values.phone,
-      phone_visibility: values.phone_visibility.value,
-      university: values.university && values.university.value,
-      university_visibility: values.university_visibility.value
+      phoneVisibility: values.phone_visibility.id,
+      university: values.university && values.university.id,
+      universityVisibility: values.university_visibility.id
     }
-    mutation.mutate(user)
+    mutation.mutate(userPayload)
+    if (croppedImage) {
+      avatarMutation.mutate({ avatar: dataUrlToFile(croppedImage, imgFilename)})
+    }
     resetForm()
     setSubmitting(false)
   }
@@ -53,15 +107,24 @@ const UserFormContainer = ({ userId, user, setUser, setIsEditing }) => {
   const defaultVisibilityStatusValue = availabilityStatuses
     .find(status => status.label.toLowerCase() === 'all');
 
+  const availabilityStatusBy = (id) => {
+    if (id) {
+      return availabilityStatuses
+        .find(status => status.id === id)
+    } else {
+      return defaultVisibilityStatusValue
+    }
+  }
+
   const initialValues = {
     name: user && user.name ? user.name : '',
-    name_visibility: defaultVisibilityStatusValue,
+    name_visibility: availabilityStatusBy(user && user.name_visibility ? user.name_visibility : undefined),
     email: user && user.email ? user.email : '',
-    email_visibility: defaultVisibilityStatusValue,
+    email_visibility: availabilityStatusBy(user && user.email_visibility ? user.email_visibility : undefined),
     phone: user && user.phone ? user.phone : '',
-    phone_visibility: defaultVisibilityStatusValue,
+    phone_visibility: availabilityStatusBy(user && user.phone_visibility ? user.phone_visibility : undefined),
     university: undefined,
-    university_visibility: defaultVisibilityStatusValue
+    university_visibility: availabilityStatusBy(user && user.university_visibility ? user.university_visibility : undefined)
   }
 
   return <UserForm
@@ -74,6 +137,14 @@ const UserFormContainer = ({ userId, user, setUser, setIsEditing }) => {
     onUserUpdate={onUserUpdate}
     showCancel={true}
     onCancel={stopEditionOnCancel}
+    image={image}
+    handleImageChange={handleImageChange}
+    setCropper={setCropper}
+    cropImage={cropImage}
+    croppedImage={croppedImage}
+    deleteImage={deleteImage}
+    userImage={user?.avatar_id ? `http://localhost:3090/avatars/${user.avatar_id}/img` : undefined}
+    resolveFirstLetterFrom={resolveFirstLetterFrom}
   />
   
 }
@@ -82,7 +153,8 @@ UserFormContainer.propTypes = {
   userId: PropTypes.string,
   user: PropTypes.object,
   setUser: PropTypes.func,
-  setIsEditing: PropTypes.func
+  setIsEditing: PropTypes.func,
+  resolveFirstLetterFrom: PropTypes.func
 }
 
 export default UserFormContainer

@@ -33,9 +33,9 @@ export const availabilityStatuses = [
 ]
 
 export const universities = [
-  { id: 1, label: 'Sumy State University', value: 'SumyStateUniversity' },
-  { id: 2, label: 'Igor Sikorsky Kyiv Polytechnic Institute', value: 'IgorSikorskyKyivPolytechnicInstitute' },
-  { id: 3, label: 'Sumy National Agrarian University', value: 'SumyNationalAgrarianUniversity' }
+  { id: '595e2625-0eda-4441-9142-c65c86afdede', label: 'Sumy State University', value: 'SumyStateUniversity' },
+  { id: '30b41ad8-c22c-427d-81c3-3505fb4742b7', label: 'Igor Sikorsky Kyiv Polytechnic Institute', value: 'IgorSikorskyKyivPolytechnicInstitute' },
+  { id: '0600fc9c-f2a6-403d-92d0-fadd4ce85a00', label: 'Sumy National Agrarian University', value: 'SumyNationalAgrarianUniversity' }
 ]
 
 export const autocompleteOptionPropTypes = PropTypes.shape({
