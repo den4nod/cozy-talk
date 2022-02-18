@@ -1,214 +1,160 @@
-import { Form, Formik, Field } from 'formik'
-import Button from '@mui/material/Button'
-import { Autocomplete, Select, TextField } from 'formik-mui'
-import {
-  Box,
-  FormControl,
-  Grid,
-  MenuItem,
-  Paper,
-  Typography
-} from '@mui/material'
 import * as yup from 'yup'
-import MuiTextField from '@mui/material/TextField';
-import { availabilityStatuses, universities } from '../../constants'
+import { availabilityStatuses, theme, universities } from '../../constants'
+import UserForm from '../../components/forms/userForm'
+import { useMutation } from 'react-query'
+import { updateUser, updateUserAvatar } from '../user/api/usersCrud'
+import PropTypes from 'prop-types'
+import { useState } from 'react'
+import { dataUrlToFile } from '../../utils'
 
-const UserFormContainer = () => {
+const UserFormContainer = ({ userId, user, setUser, setIsEditing, resolveFirstLetterFrom }) => {
 
-  const defaultVisibilityStatusValue = availabilityStatuses
-    .find(status => status.label.toLowerCase() === 'all').value;
+  const [image, setImage] = useState()
+  const [croppedImage, setCroppedImage] = useState()
+  const [cropper, setCropper] = useState()
+
+  const [imgFilename, setImgFilename] = useState('image.jpeg')
+
+  const handleImageChange = e => {
+    e.preventDefault()
+    const file = e.target.files[0]
+
+    if (file.type.match('image.*') && file.size < 10000000) {
+      setImgFilename(file.name)
+      const reader = new FileReader()
+      reader.onload = () => {
+        setImage(reader.result)
+      }
+      reader.readAsDataURL(file)
+    } else {
+      console.error('Wrong file format or size!')
+    }
+  }
+
+  const cropImage = () => {
+    if (typeof cropper !== 'undefined') {
+      setCroppedImage(cropper.getCroppedCanvas().toDataURL())
+      setImage(null)
+    }
+  }
+
+  const deleteImage = () => {
+    setCroppedImage(null)
+    setImage(null)
+  }
+
+  const mutation = useMutation((user) =>
+    updateUser(userId, user),
+  {
+    onSuccess: (data, user) => {
+      console.log(user)
+      const updatedArticle = {
+        name: user.name,
+        name_visibility: user.nameVisibility,
+        email: user.email,
+        email_visibility: user.emailVisibility,
+        phone: user.phone,
+        phone_visibility: user.phoneVisibility,
+        university: user.universityVisibility,
+        university_visibility: user.universityVisibility
+      }
+      setUser(updatedArticle)
+      setIsEditing(false)
+    }
+  })
+
+  const avatarMutation = useMutation((avatar) =>
+    updateUserAvatar(userId, avatar)
+  )
+
+  const onUserUpdate = (values, { setSubmitting, resetForm }) => {
+
+    const userPayload = {
+      name: values.name,
+      nameVisibility: values.name_visibility.id,
+      email: values.email,
+      emailVisibility: values.email_visibility.id,
+      phone: values.phone,
+      phoneVisibility: values.phone_visibility.id,
+      university: values.university && values.university.id,
+      universityVisibility: values.university_visibility.id
+    }
+    mutation.mutate(userPayload)
+    if (croppedImage) {
+      avatarMutation.mutate({ avatar: dataUrlToFile(croppedImage, imgFilename)})
+    }
+    resetForm()
+    setSubmitting(false)
+  }
+
+  const stopEditionOnCancel = () => {
+    setIsEditing(false)
+  }
 
   const schema = yup.object().shape({
     name: yup.string().required('Name is required'),
-    name_visibility: yup.string().required('Name availability status is required'),
+    name_visibility: yup.object().required('Name availability status is required'),
     email: yup.string().email('Should be a valid email address').required('Email is required'),
-    email_visibility: yup.string().required('Email availability status is required'),
+    email_visibility: yup.object().required('Email availability status is required'),
     phone: yup.string().required('Phone is required').matches(/^[0-9]+$/, 'Phone should contain only digits')
       .min(10, 'Phone should contain 10 digits')
       .max(10, 'Phone should contain 10 digits'),
-    phone_visibility: yup.string().required('Phone availability status is required'),
-    university: yup.string(),
-    university_visibility: yup.string(),
+    phone_visibility: yup.object().required('Phone availability status is required'),
+    university: yup.object(),
+    university_visibility: yup.object(),
   })
 
-  return (
-    <Box margin={5}>
-      <Formik
-        initialValues={{
-          name: '',
-          name_visibility: defaultVisibilityStatusValue,
-          email: '',
-          email_visibility: defaultVisibilityStatusValue,
-          phone: '',
-          phone_visibility: defaultVisibilityStatusValue,
-          university_visibility: defaultVisibilityStatusValue,
-        }}
-        validationSchema={schema}
-        onSubmit={(values, { setSubmitting }) => {
-          setTimeout(() => {
-            alert(JSON.stringify(values, null, 2))
-            setSubmitting(false)
-          }, 400)
-        }}
-      >
-        {({
-          errors,
-          touched,
-          handleChange,
-          handleBlur,
-          handleSubmit,
-          isSubmitting
-        }) => (
-          <Form onSubmit={handleSubmit}>
-            <Paper elevation={16} sx={{ p: 3, margin: 'auto', maxWidth: 500, flexGrow: 1 }}>
-              <Grid container>
-                <Grid item xs={12} mb={3}>
-                  <Typography variant='h4' component='div'>My Profile</Typography>
-                </Grid>
-                <Grid container mb={3} height={85}>
-                  <Grid item xs={8}>
-                    <Typography color='text.secondary'>Name</Typography>
-                    <Field
-                      component={TextField}
-                      fullWidth
-                      type='text'
-                      name='name'
-                      sx={{width: 300}}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                  </Grid>
-                  <Grid item xs={4} sx={{justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-                    <Typography color='text.secondary'>Available to</Typography>
-                    <FormControl>
-                      <Field
-                        component={Select}
-                        type='text'
-                        name='name_visibility'
-                        id="name_visibility"
-                        sx={{width: 165}}
-                      >
-                        {availabilityStatuses.map((option) => (
-                          <MenuItem key={option.id} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </Field>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-                <Grid container mb={3} height={85}>
-                  <Grid item xs={8}>
-                    <Typography color='text.secondary'>Email</Typography>
-                    <Field
-                      component={TextField}
-                      fullWidth
-                      type='text'
-                      name='email'
-                      sx={{width: 300}}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                  </Grid>
-                  <Grid item xs={4} sx={{justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-                    <Typography color='text.secondary'>Available to</Typography>
-                    <FormControl>
-                      <Field
-                        component={Select}
-                        type='text'
-                        name='email_visibility'
-                        id="email_visibility"
-                        sx={{width: 165}}
-                      >
-                        {availabilityStatuses.map((option) => (
-                          <MenuItem key={option.id} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </Field>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-                <Grid container mb={3} height={85}>
-                  <Grid item xs={8}>
-                    <Typography color='text.secondary'>Phone</Typography>
-                    <Field
-                      component={TextField}
-                      fullWidth
-                      type='text'
-                      name='phone'
-                      sx={{width: 300}}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                  </Grid>
-                  <Grid item xs={4} sx={{justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-                    <Typography color='text.secondary'>Available to</Typography>
-                    <FormControl>
-                      <Field
-                        component={Select}
-                        type='text'
-                        name='phone_visibility'
-                        id="phone_visibility"
-                        sx={{width: 165}}
-                      >
-                        {availabilityStatuses.map((option) => (
-                          <MenuItem key={option.id} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </Field>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-                <Grid container mb={3} height={85}>
-                  <Grid item xs={8}>
-                    <Typography color='text.secondary'>University</Typography>
-                    <Field
-                      name="university"
-                      component={Autocomplete}
-                      options={universities}
-                      getOptionLabel={(option) => option.name}
-                      style={{width: 300}}
-                      renderInput={(params) => (
-                        <MuiTextField
-                          {...params}
-                          name="uni"
-                          error={touched['uni'] && !!errors['uni']}
-                          helperText={touched['uni'] && errors['uni']}
-                        />
-                      )}
-                    />
-                  </Grid>
-                  <Grid item xs={4} sx={{justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-                    <Typography color='text.secondary'>Available to</Typography>
-                    <FormControl>
-                      <Field
-                        component={Select}
-                        type='text'
-                        name='university_visibility'
-                        id="university_visibility"
-                        sx={{width: 165}}
-                      >
-                        {availabilityStatuses.map((option) => (
-                          <MenuItem key={option.id} value={option.value}>
-                            {option.label}
-                          </MenuItem>
-                        ))}
-                      </Field>
-                    </FormControl>
-                  </Grid>
-                </Grid>
-                <Grid container sx={{justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-                  <Button type='submit' disabled={isSubmitting} variant="contained">Save</Button>
-                </Grid>
-              </Grid>
-            </Paper>
-          </Form>
-        )}
-      </Formik>
-    </Box>
-  )
+  const defaultVisibilityStatusValue = availabilityStatuses
+    .find(status => status.label.toLowerCase() === 'all');
+
+  const availabilityStatusBy = (id) => {
+    if (id) {
+      return availabilityStatuses
+        .find(status => status.id === id)
+    } else {
+      return defaultVisibilityStatusValue
+    }
+  }
+
+  const initialValues = {
+    name: user && user.name ? user.name : '',
+    name_visibility: availabilityStatusBy(user && user.name_visibility ? user.name_visibility : undefined),
+    email: user && user.email ? user.email : '',
+    email_visibility: availabilityStatusBy(user && user.email_visibility ? user.email_visibility : undefined),
+    phone: user && user.phone ? user.phone : '',
+    phone_visibility: availabilityStatusBy(user && user.phone_visibility ? user.phone_visibility : undefined),
+    university: undefined,
+    university_visibility: availabilityStatusBy(user && user.university_visibility ? user.university_visibility : undefined)
+  }
+
+  return <UserForm
+    availabilityStatuses={availabilityStatuses}
+    schema={schema}
+    initialValues={initialValues}
+    title={'Update profile'}
+    theme={theme}
+    universities={universities}
+    onUserUpdate={onUserUpdate}
+    showCancel={true}
+    onCancel={stopEditionOnCancel}
+    image={image}
+    handleImageChange={handleImageChange}
+    setCropper={setCropper}
+    cropImage={cropImage}
+    croppedImage={croppedImage}
+    deleteImage={deleteImage}
+    userImage={user?.avatar_id ? `http://localhost:3090/avatars/${user.avatar_id}/img` : undefined}
+    resolveFirstLetterFrom={resolveFirstLetterFrom}
+  />
+  
+}
+
+UserFormContainer.propTypes = {
+  userId: PropTypes.string,
+  user: PropTypes.object,
+  setUser: PropTypes.func,
+  setIsEditing: PropTypes.func,
+  resolveFirstLetterFrom: PropTypes.func
 }
 
 export default UserFormContainer

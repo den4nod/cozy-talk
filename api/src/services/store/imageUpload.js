@@ -21,15 +21,29 @@ const fileFilter = (req, file, cb) => {
   }
 }
 
-const upload = multer({
+const avatarUpload = multer({
   fileFilter,
   storage: multerS3({
     s3: s3,
     bucket: s3Bucket,
     key: function (req, file, cb) {
-      cb(null, uuidv4() + path.extname(file.originalname))
+      cb(null, 'avatars/' + uuidv4() + path.extname(file.originalname))
     }
   })
 })
 
-module.exports = upload
+const articleImageUpload = multer({
+  fileFilter,
+  storage: multerS3({
+    s3: s3,
+    bucket: s3Bucket,
+    key: function (req, file, cb) {
+      cb(null, 'articleImages/' + uuidv4() + path.extname(file.originalname))
+    }
+  })
+})
+
+module.exports = {
+  avatarUpload,
+  articleImageUpload
+}

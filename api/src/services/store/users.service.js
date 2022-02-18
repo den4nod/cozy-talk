@@ -28,16 +28,43 @@ module.exports = {
       .then(() => {})
   },
 
-  updateUserById: async (userId, name, email, phone) => {
-    if (!name && !email && !phone) {
+  updateUserById: async (
+    userId,
+    name,
+    nameVisibility,
+    email,
+    emailVisibility,
+    phone,
+    phoneVisibility,
+    university,
+    universityVisibility
+  ) => {
+    if (
+      !userId &&
+      !name &&
+      !nameVisibility &&
+      !email &&
+      !emailVisibility &&
+      !phone &&
+      !phoneVisibility &&
+      !university &&
+      !universityVisibility
+    ) {
       throw new ErrorHandler('Nothing to update', {
         expose: true
       })
     }
     const updateFields = {
       ...(name && { name: name }),
+      ...(nameVisibility && { name_visibility_status_id: nameVisibility }),
       ...(email && { email: email }),
-      ...(phone && { phone: phone })
+      ...(emailVisibility && { email_visibility_status_id: emailVisibility }),
+      ...(phone && { phone: phone }),
+      ...(phoneVisibility && { phone_visibility_status_id: phoneVisibility }),
+      ...(university && { university_id: university }),
+      ...(universityVisibility && {
+        university_visibility_status_id: universityVisibility
+      })
     }
     return await db(TABLES.USERS)
       .where({ user_id: userId })

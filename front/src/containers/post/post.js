@@ -16,12 +16,11 @@ export function PostContainer() {
       ) : isError ? (
         <Error title={error.message} />
       ) : (
-        articles.map(({ article_id, article_body, date_created }) => (
+        articles.map(( article ) => (
           <Post
-            key={article_id}
-            postId={article_id}
-            postBody={article_body}
-            dateCreated={formatDateFromString(date_created)}
+            key={article.article_id}
+            articleInfo={article}
+            dateCreated={formatDateFromString(article.date_created)}
           />)
         )
       )}

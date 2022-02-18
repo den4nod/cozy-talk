@@ -91,8 +91,9 @@ CREATE TABLE IF NOT EXISTS articles
     article_id                   uuid      DEFAULT uuid_generate_v4() NOT NULL PRIMARY KEY,
     article_body                 text      NOT NULL,
     user_id                      uuid      NOT NULL,
+    article_image_path           varchar(255),
     article_visibility_status_id smallint,
-    date_created                  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    date_created                 TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     date_edited                  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (user_id)
         ON DELETE CASCADE ON UPDATE CASCADE,
@@ -175,8 +176,8 @@ CREATE TABLE IF NOT EXISTS liked_articles
 
 CREATE TABLE IF NOT EXISTS logs
 (
-    id BIGSERIAL PRIMARY KEY,
-    method VARCHAR(6) NOT NULL,
-    url VARCHAR(255) NOT NULL,
-    date_created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    id           BIGSERIAL    NOT NULL PRIMARY KEY,
+    method       VARCHAR(7)   NOT NULL,
+    url          VARCHAR(255) NOT NULL,
+    date_created TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
