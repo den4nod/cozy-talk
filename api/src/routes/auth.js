@@ -63,11 +63,6 @@ router.get(
   }
 )
 
-// TODO: auth check middleware
-// const isLoggedIn = (req, res, next) => {
-//   req.user ? next() : next(new UnauthorizedException())
-// }
-
 router.get(
   '/google/callback',
   passport.authenticate('google', {
@@ -75,10 +70,5 @@ router.get(
     failureRedirect: '/auth/failure'
   })
 )
-
-// router.get(
-//   '/google',
-//   passport.authenticate('google', { scope: ['email', 'profile'] })
-// )
 
 module.exports = router

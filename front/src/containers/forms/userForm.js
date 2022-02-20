@@ -47,7 +47,6 @@ const UserFormContainer = ({ userId, user, setUser, setIsEditing, resolveFirstLe
     updateUser(userId, user),
   {
     onSuccess: (data, user) => {
-      console.log(user)
       const updatedArticle = {
         name: user.name,
         name_visibility: user.nameVisibility,
