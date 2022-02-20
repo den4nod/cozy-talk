@@ -1,6 +1,6 @@
 const db = require('../../services/db')
 const { TABLES } = require('./constants')
-const { ErrorHandler } = require('../../error')
+const { ErrorHandler } = require('../../errors/error')
 
 module.exports = {
   getAllArticles: async () =>

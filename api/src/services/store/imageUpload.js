@@ -3,7 +3,7 @@ const multerS3 = require('multer-s3')
 const { s3, s3Bucket } = require('../s3Config')
 const path = require('path')
 const { v4: uuidv4 } = require('uuid')
-const { ErrorHandler } = require('../../error')
+const { ErrorHandler } = require('../../errors/error')
 
 const fileFilter = (req, file, cb) => {
   if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {

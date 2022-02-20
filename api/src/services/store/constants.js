@@ -5,11 +5,13 @@ module.exports = {
     LIKED_ARTICLES: 'liked_articles',
     COMMENTS: 'comments',
     COMMENTS_TREEPATH: 'comments_treepath',
-    AVATARS: 'avatars'
+    AVATARS: 'avatars',
+    SESSIONS: 'sessions'
   },
   STATUS_CODES: {
     SUCCESS: 200,
     BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
     INTERNAL_SERVER_ERROR: 500
   },
   CONSOLE_COLORS: {

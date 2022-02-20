@@ -2,12 +2,14 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const commentsService = require('../services/store/comments.service')
 const asyncErrorHandlingMiddleware = require('../middlewares/asyncErrorHandlingMiddleware')
+const authMiddleware = require('../middlewares/authMiddleware')
 
 const router = express.Router()
 const jsonParser = bodyParser.json()
 
 router.get(
   '/',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     res.json(await commentsService.getAllComments())
   })
@@ -16,6 +18,7 @@ router.get(
 router.post(
   '/',
   jsonParser,
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { articleId, userId, commentText, parentId } = req.body
     res.json(
@@ -31,6 +34,7 @@ router.post(
 
 router.get(
   '/:commentId',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { commentId } = req.params
     res.json(await commentsService.getCommentBy(commentId))
@@ -40,6 +44,7 @@ router.get(
 router.put(
   '/:commentId',
   jsonParser,
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { commentId } = req.params
     const { commentText } = req.body
@@ -49,6 +54,7 @@ router.put(
 
 router.delete(
   '/:commentId',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { commentId } = req.params
     res.json(await commentsService.deleteComment(commentId))

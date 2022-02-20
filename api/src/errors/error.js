@@ -1,18 +1,24 @@
-const { STATUS_CODES, CONSOLE_COLORS } = require('./services/store/constants')
+const { STATUS_CODES, CONSOLE_COLORS } = require('../services/store/constants')
+const UnauthorizedException = require('./UnauthorizedException')
 
 const handleError = (err, res) => {
   const { message, props } = err
   if (props && props.expose) {
-    res.status(STATUS_CODES.BAD_REQUEST).json({
+    return res.status(STATUS_CODES.BAD_REQUEST).json({
       status: 'error',
       message
     })
-  } else {
-    res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+  }
+  if (err instanceof UnauthorizedException) {
+    return res.status(STATUS_CODES.UNAUTHORIZED).json({
       status: 'error',
-      message: 'Something went wrong'
+      message: 'Unauthorized'
     })
   }
+  res.status(STATUS_CODES.INTERNAL_SERVER_ERROR).json({
+    status: 'error',
+    message: 'Something went wrong'
+  })
 }
 
 const logError = (err, req) => {

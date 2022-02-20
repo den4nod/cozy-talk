@@ -16,6 +16,7 @@ DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS friendships CASCADE;
 DROP TABLE IF EXISTS liked_articles CASCADE;
 DROP TABLE IF EXISTS logs CASCADE;
+DROP TABLE IF EXISTS sessions CASCADE;
 
 CREATE TABLE IF NOT EXISTS avatars
 (
@@ -57,7 +58,7 @@ CREATE TABLE IF NOT EXISTS users
     birth_date                      date,
     avatar_id                       uuid,
     email                           varchar(50)                     NOT NULL,
-    phone                           varchar(13)                     NOT NULL,
+    phone                           varchar(13),
     university_id                   uuid,
     name_visibility_status_id       smallint,
     email_visibility_status_id      smallint,
@@ -176,8 +177,16 @@ CREATE TABLE IF NOT EXISTS liked_articles
 
 CREATE TABLE IF NOT EXISTS logs
 (
-    id           BIGSERIAL    NOT NULL PRIMARY KEY,
-    method       VARCHAR(7)   NOT NULL,
-    url          VARCHAR(255) NOT NULL,
-    date_created TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
+    id           BIGSERIAL  NOT NULL PRIMARY KEY,
+    method       VARCHAR(7) NOT NULL,
+    url          text       NOT NULL,
+    date_created TIMESTAMP  NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS sessions
+(
+    id           BIGSERIAL NOT NULL PRIMARY KEY,
+    user_id      uuid      NOT NULL,
+    token        uuid      NOT NULL,
+    date_created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );

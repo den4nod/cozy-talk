@@ -1,11 +1,12 @@
 const express = require('express')
 const { s3Bucket, s3 } = require('../services/s3Config')
-const { ErrorHandler } = require('../error')
+const { ErrorHandler } = require('../errors/error')
 const { STATUS_CODES } = require('../services/store/constants')
+const authMiddleware = require('../middlewares/authMiddleware')
 
 const router = express.Router()
 
-router.get('/', function (req, res, next) {
+router.get('/', authMiddleware, function (req, res, next) {
   const { img } = req.query
   const params = { Bucket: s3Bucket, Key: img }
   s3.getObject(params, (err, data) => {

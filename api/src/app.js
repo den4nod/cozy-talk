@@ -8,15 +8,22 @@ const comments = require('./routes/comments')
 const likes = require('./routes/likes')
 const avatars = require('./routes/avatars')
 const files = require('./routes/files')
+const auth = require('./routes/auth')
 const requestLoggerMiddleware = require('./middlewares/requestLoggerMiddleware')
 const dbConfig = require('./services/db')
 const targetTableName = require('./services/logConfig')
 const errorHandlingMiddleware = require('./middlewares/errorHandlingMiddleware')
+const googleStrategy = require('./auth/google.strategy')
+const bodyParser = require('body-parser')
 
 const app = express()
 
+googleStrategy.registerStrategy()
+
 app.use(requestLoggerMiddleware({ dbConfig, targetTableName }))
 app.use(cors(corsConfig.options))
+app.use(bodyParser.json())
+app.use(googleStrategy.passport.initialize())
 
 app.get('/', function (req, res) {
   res.send('API test')
@@ -28,6 +35,7 @@ app.use('/comments', comments)
 app.use('/likes', likes)
 app.use('/avatars', avatars)
 app.use('/files', files)
+app.use('/auth', auth)
 
 app.use(errorHandlingMiddleware)
 app.listen(config.appPort)

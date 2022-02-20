@@ -1,4 +1,4 @@
-const { handleError, logError } = require('../error')
+const { handleError, logError } = require('../errors/error')
 
 module.exports = (err, req, res, next) => {
   logError(err, req)
