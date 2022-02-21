@@ -55,4 +55,25 @@ router.post(
   })
 )
 
+router.post(
+  '/facebook',
+  passport.authenticate('facebook-token', {
+    session: false
+  }),
+  asyncErrorHandlingMiddleware(async (req, res) => {
+    const { accessToken, refreshToken } = await authService.authorizeById(
+      req.user.id
+    )
+    if (accessToken) {
+      // todo: set max-age and refreshToken to httpOnly cookie
+      return res.send({
+        accessToken: accessToken,
+        refreshToken: refreshToken,
+        success: true
+      })
+    }
+    throw new UnauthorizedException()
+  })
+)
+
 module.exports = router

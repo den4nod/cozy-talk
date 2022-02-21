@@ -3,17 +3,20 @@ const sessionsService = require('./session.service')
 const usersService = require('./users.service')
 const config = require('../config')
 const jwt = require('jsonwebtoken')
+const expTimes = require('../authConfig').expTimes
+
+const accessJwtToken = (user) => {
+  return jwt.sign({ user_id: user.user_id, name: user.name }, config.appKey, {
+    expiresIn: expTimes.accessTokenExpTime
+  })
+}
 
 module.exports = {
   authorizeById: async (id) => {
     const user = await usersService.getUserById(id)
     if (user) {
-      const accessToken = jwt.sign(
-        { user_id: user.user_id, name: user.name },
-        config.appKey
-      )
+      const accessToken = accessJwtToken(user)
       const refreshToken = uuidv4()
-      // todo: save expiresIn to sessions table
       await sessionsService.create({
         user_id: user.user_id,
         token: refreshToken
@@ -27,10 +30,7 @@ module.exports = {
     const session = await sessionsService.getByToken(refreshToken)
     if (session) {
       const user = await usersService.getUserById(session.user_id)
-      const accessToken = jwt.sign(
-        { user_id: user.id, name: user.name },
-        config.appKey
-      )
+      const accessToken = accessJwtToken(user)
       const refreshToken = uuidv4()
       await sessionsService.deleteByToken(session.token)
       await sessionsService.create({

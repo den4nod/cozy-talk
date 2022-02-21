@@ -6,5 +6,9 @@ module.exports = {
   fbAuth: {
     appId: process.env.FB_APP_ID,
     appSecret: process.env.FB_APP_SECRET
+  },
+  expTimes: {
+    accessTokenExpTime: process.env.ACCESS_TOKEN_EXP_TIME,
+    refreshTokenExpTime: process.env.REFRESH_TOKEN_EXP_TIME
   }
 }
