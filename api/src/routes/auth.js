@@ -55,20 +55,4 @@ router.post(
   })
 )
 
-router.get(
-  '/google/token',
-  passport.authenticate('google-token'),
-  function (req, res) {
-    res.send(req.user)
-  }
-)
-
-router.get(
-  '/google/callback',
-  passport.authenticate('google', {
-    successRedirect: '/users',
-    failureRedirect: '/auth/failure'
-  })
-)
-
 module.exports = router
