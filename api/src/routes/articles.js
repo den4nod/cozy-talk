@@ -23,7 +23,8 @@ router.post(
   jsonParser,
   authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
-    const { articleBody, userId, articleImagePath, articleVisibilityStatusId } =
+    const userId = req.auth.user_id
+    const { articleBody, articleImagePath, articleVisibilityStatusId } =
       req.body
     res.json(
       await articlesService.createArticle(
@@ -47,7 +48,8 @@ router.post(
           expose: true
         })
       }
-      const { articleBody, userId, articleVisibilityStatusId } = req.body
+      const userId = req.auth.user_id
+      const { articleBody, articleVisibilityStatusId } = req.body
       const { key } = req.file
 
       res.json(
@@ -74,7 +76,8 @@ router.put(
           expose: true
         })
       }
-      const { articleBody, userId, articleVisibilityStatusId } = req.body
+      const userId = req.auth.user_id
+      const { articleBody, articleVisibilityStatusId } = req.body
       const { key } = req.file
 
       res.json(
@@ -142,8 +145,8 @@ router.post(
   authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { articleId } = req.params
-    // todo: take userId from: req.auth.user_id
-    const { userId, commentText, parentId } = req.body
+    const userId = req.auth.user_id
+    const { commentText, parentId } = req.body
     res.json(
       await commentsService.createComment(
         articleId,

@@ -20,7 +20,8 @@ router.post(
   jsonParser,
   authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
-    const { articleId, userId, commentText, parentId } = req.body
+    const userId = req.auth.user_id
+    const { articleId, commentText, parentId } = req.body
     res.json(
       await commentsService.createComment(
         articleId,

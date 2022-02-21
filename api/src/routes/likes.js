@@ -28,7 +28,7 @@ router.get(
   '/',
   authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
-    const { userId } = req.query
+    const userId = req.auth.user_id
     res.json(await likesService.getAllLikesByUser(userId))
   })
 )
@@ -37,7 +37,8 @@ router.get(
   '/',
   authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
-    const { userId, articleId } = req.query
+    const userId = req.auth.user_id
+    const { articleId } = req.query
     res.json(await likesService.getLikeByUserForArticle(userId, articleId))
   })
 )
@@ -47,7 +48,8 @@ router.post(
   jsonParser,
   authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
-    const { userId, articleId } = req.query
+    const userId = req.auth.user_id
+    const { articleId } = req.query
     res.json(await likesService.createLike(userId, articleId))
   })
 )
@@ -56,7 +58,8 @@ router.delete(
   '/',
   authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
-    const { userId, articleId } = req.query
+    const userId = req.auth.user_id
+    const { articleId } = req.query
     res.json(await likesService.deleteLike(userId, articleId))
   })
 )
