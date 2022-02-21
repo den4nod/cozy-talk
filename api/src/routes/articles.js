@@ -4,6 +4,7 @@ const articlesService = require('../services/store/articles.service')
 const commentsService = require('../services/store/comments.service')
 const asyncErrorHandlingMiddleware = require('../middlewares/asyncErrorHandlingMiddleware')
 const authMiddleware = require('../middlewares/authMiddleware')
+const fbAuthMiddleware = require('../middlewares/fbAuthMiddleware')
 const { articleImageUpload } = require('../services/store/imageUpload')
 const { ErrorHandler } = require('../errors/error')
 
@@ -12,7 +13,7 @@ const jsonParser = bodyParser.json()
 
 router.get(
   '/',
-  authMiddleware,
+  fbAuthMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     res.json(await articlesService.getAllArticles())
   })

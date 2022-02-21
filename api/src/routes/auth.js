@@ -55,4 +55,19 @@ router.post(
   })
 )
 
+router.get(
+  '/facebook',
+  passport.authenticate('facebook', { scope: ['email'], session: false })
+)
+
+router.get(
+  '/facebook/callback',
+  passport.authenticate('facebook', {
+    failureRedirect: '/auth/facebook'
+  }),
+  function (req, res) {
+    res.redirect('/articles')
+  }
+)
+
 module.exports = router

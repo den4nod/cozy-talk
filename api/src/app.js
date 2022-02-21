@@ -14,16 +14,32 @@ const dbConfig = require('./services/db')
 const targetTableName = require('./services/logConfig')
 const errorHandlingMiddleware = require('./middlewares/errorHandlingMiddleware')
 const googleStrategy = require('./auth/google.strategy')
+const fbStrategy = require('./auth/facebook.strategy')
 const bodyParser = require('body-parser')
+
+const session = require('express-session')
 
 const app = express()
 
 googleStrategy.registerStrategy()
+fbStrategy.registerStrategy()
 
 app.use(requestLoggerMiddleware({ dbConfig, targetTableName }))
+
 app.use(cors(corsConfig.options))
 app.use(bodyParser.json())
 app.use(googleStrategy.passport.initialize())
+
+app.use(
+  session({
+    secret: config.appSessionSecret,
+    resave: true,
+    saveUninitialized: true
+  })
+)
+
+app.use(fbStrategy.passport.initialize())
+app.use(fbStrategy.passport.session())
 
 app.get('/', function (req, res) {
   res.send('API test')
