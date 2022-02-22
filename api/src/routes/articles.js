@@ -3,14 +3,16 @@ const bodyParser = require('body-parser')
 const articlesService = require('../services/store/articles.service')
 const commentsService = require('../services/store/comments.service')
 const asyncErrorHandlingMiddleware = require('../middlewares/asyncErrorHandlingMiddleware')
+const authMiddleware = require('../middlewares/authMiddleware')
 const { articleImageUpload } = require('../services/store/imageUpload')
-const { ErrorHandler } = require('../error')
+const { ErrorHandler } = require('../errors/error')
 
 const router = express.Router()
 const jsonParser = bodyParser.json()
 
 router.get(
   '/',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     res.json(await articlesService.getAllArticles())
   })
@@ -19,8 +21,10 @@ router.get(
 router.post(
   '/',
   jsonParser,
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
-    const { articleBody, userId, articleImagePath, articleVisibilityStatusId } =
+    const userId = req.auth.user_id
+    const { articleBody, articleImagePath, articleVisibilityStatusId } =
       req.body
     res.json(
       await articlesService.createArticle(
@@ -35,6 +39,7 @@ router.post(
 
 router.post(
   '/form',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const singleUpload = articleImageUpload.single('articleImage')
     singleUpload(req, res, async function (err) {
@@ -43,7 +48,8 @@ router.post(
           expose: true
         })
       }
-      const { articleBody, userId, articleVisibilityStatusId } = req.body
+      const userId = req.auth.user_id
+      const { articleBody, articleVisibilityStatusId } = req.body
       const { key } = req.file
 
       res.json(
@@ -60,6 +66,7 @@ router.post(
 
 router.put(
   '/form/:articleId',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { articleId } = req.params
     const singleUpload = articleImageUpload.single('articleImage')
@@ -69,7 +76,8 @@ router.put(
           expose: true
         })
       }
-      const { articleBody, userId, articleVisibilityStatusId } = req.body
+      const userId = req.auth.user_id
+      const { articleBody, articleVisibilityStatusId } = req.body
       const { key } = req.file
 
       res.json(
@@ -87,6 +95,7 @@ router.put(
 
 router.get(
   '/:articleId',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { articleId } = req.params
     res.json(await articlesService.getArticleById(articleId))
@@ -96,6 +105,7 @@ router.get(
 router.put(
   '/:articleId',
   jsonParser,
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { articleId } = req.params
     const { articleBody, articleImagePath, articleVisibilityStatusId } =
@@ -113,6 +123,7 @@ router.put(
 
 router.delete(
   '/:articleId',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { articleId } = req.params
     res.json(await articlesService.deleteArticleById(articleId))
@@ -121,6 +132,7 @@ router.delete(
 
 router.get(
   '/:articleId/comments',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { articleId } = req.params
     res.json(await commentsService.getAllCommentsForArticleById(articleId))
@@ -130,9 +142,11 @@ router.get(
 router.post(
   '/:articleId/comments',
   jsonParser,
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { articleId } = req.params
-    const { userId, commentText, parentId } = req.body
+    const userId = req.auth.user_id
+    const { commentText, parentId } = req.body
     res.json(
       await commentsService.createComment(
         articleId,
@@ -146,6 +160,7 @@ router.post(
 
 router.get(
   '/:articleId/comments/:commentId',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { articleId, commentId } = req.params
     res.json(await commentsService.getCommentBy(commentId, articleId))
@@ -155,6 +170,7 @@ router.get(
 router.put(
   '/:articleId/comments/:commentId',
   jsonParser,
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { articleId, commentId } = req.params
     const { commentText } = req.body
@@ -166,6 +182,7 @@ router.put(
 
 router.delete(
   '/:articleId/comments/:commentId',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { articleId, commentId } = req.params
     res.json(await commentsService.deleteComment(commentId, articleId))

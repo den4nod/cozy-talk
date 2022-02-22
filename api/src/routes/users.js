@@ -6,14 +6,16 @@ const avatarsService = require('../services/store/avatars.service')
 const { STATUS_CODES } = require('../services/store/constants')
 const { s3Bucket, s3 } = require('../services/s3Config')
 const asyncErrorHandlingMiddleware = require('../middlewares/asyncErrorHandlingMiddleware')
-const { ErrorHandler } = require('../error')
+const { ErrorHandler } = require('../errors/error')
 const { avatarUpload } = require('../services/store/imageUpload')
+const authMiddleware = require('../middlewares/authMiddleware')
 
 const router = express.Router()
 const jsonParser = bodyParser.json()
 
 router.get(
   '/',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     res.json(await usersService.getAllUsers())
   })
@@ -22,14 +24,16 @@ router.get(
 router.post(
   '/',
   jsonParser,
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
-    const { name, email, phone } = req.body
-    res.json(await usersService.createUser(name, email, phone))
+    const { name, email } = req.body
+    res.json(await usersService.createUser(name, email))
   })
 )
 
 router.get(
   '/:id',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { id } = req.params
     res.json(await usersService.getUserById(id))
@@ -39,6 +43,7 @@ router.get(
 router.put(
   '/:id',
   jsonParser,
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { id } = req.params
     const {
@@ -69,6 +74,7 @@ router.put(
 
 router.delete(
   '/:id',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { id } = req.params
     res.json(await usersService.deleteUserById(id))
@@ -77,6 +83,7 @@ router.delete(
 
 router.get(
   '/:id/likes',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { id } = req.params
     const { articleId } = req.query
@@ -87,6 +94,7 @@ router.get(
 router.post(
   '/:id/likes',
   jsonParser,
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { id } = req.params
     const { articleId } = req.body
@@ -97,6 +105,7 @@ router.post(
 router.delete(
   '/:id/likes',
   jsonParser,
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { id } = req.params
     const { articleId } = req.body
@@ -106,6 +115,7 @@ router.delete(
 
 router.get(
   '/:id/avatar',
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { id } = req.params
     const avatars = await avatarsService.getUserAvatarById(id)
@@ -126,6 +136,7 @@ router.get(
 router.post(
   '/:id/avatar',
   jsonParser,
+  authMiddleware,
   asyncErrorHandlingMiddleware(async function (req, res, next) {
     const { id } = req.params
     const singleUpload = avatarUpload.single('avatar')

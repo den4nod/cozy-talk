@@ -1,13 +1,23 @@
 const db = require('../../services/db')
 const { TABLES } = require('./constants')
-const { ErrorHandler } = require('../../error')
+const { ErrorHandler } = require('../../errors/error')
 
 module.exports = {
   getAllUsers: async () => db(TABLES.USERS).orderBy('name'),
 
-  getUserById: async (userId) => db(TABLES.USERS).where({ user_id: userId }),
+  getUserById: async (userId) =>
+    db.select().first().from(TABLES.USERS).where('user_id', userId),
 
-  createUser: async (name, email, phone) => {
+  getUserByEmail: async (email) => {
+    if (!email) {
+      throw new ErrorHandler('Email cannot be empty', {
+        expose: true
+      })
+    }
+    return db.select().first().from(TABLES.USERS).where('email', email)
+  },
+
+  createUser: async (name, email) => {
     if (!name) {
       throw new ErrorHandler('Name cannot be empty', {
         expose: true
@@ -18,13 +28,8 @@ module.exports = {
         expose: true
       })
     }
-    if (!phone) {
-      throw new ErrorHandler('Phone cannot be empty', {
-        expose: true
-      })
-    }
     return db(TABLES.USERS)
-      .insert({ name: name, email: email, phone: phone })
+      .insert({ name: name, email: email })
       .then(() => {})
   },
 
