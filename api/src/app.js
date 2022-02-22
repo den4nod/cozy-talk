@@ -13,17 +13,17 @@ const requestLoggerMiddleware = require('./middlewares/requestLoggerMiddleware')
 const dbConfig = require('./services/db')
 const targetTableName = require('./services/logConfig')
 const errorHandlingMiddleware = require('./middlewares/errorHandlingMiddleware')
-const googleStrategy = require('./auth/google.strategy')
 const bodyParser = require('body-parser')
+const passport = require('passport')
+require('./auth/google.strategy')
+require('./auth/fb.strategy')
 
 const app = express()
-
-googleStrategy.registerStrategy()
 
 app.use(requestLoggerMiddleware({ dbConfig, targetTableName }))
 app.use(cors(corsConfig.options))
 app.use(bodyParser.json())
-app.use(googleStrategy.passport.initialize())
+app.use(passport.initialize())
 
 app.get('/', function (req, res) {
   res.send('API test')

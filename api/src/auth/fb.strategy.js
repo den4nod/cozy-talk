@@ -1,13 +1,13 @@
 const passport = require('passport')
-const GoogleTokenStrategy = require('passport-google-token').Strategy
+const FacebookTokenStrategy = require('passport-facebook-token')
 const usersService = require('../services/store/users.service')
-const googleAuth = require('../services/authConfig').googleAuth
+const fbAuth = require('../services/authConfig').fbAuth
 
 passport.use(
-  new GoogleTokenStrategy(
+  new FacebookTokenStrategy(
     {
-      clientID: googleAuth.clientId,
-      clientSecret: googleAuth.clientSecret
+      clientID: fbAuth.appId,
+      clientSecret: fbAuth.appSecret
     },
     async (accessToken, refreshToken, profile, done) => {
       const [{ value: email }] = profile.emails
