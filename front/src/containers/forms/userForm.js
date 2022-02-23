@@ -7,7 +7,7 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { dataUrlToFile } from '../../utils'
 
-const UserFormContainer = ({ userId, user, setUser, setIsEditing, resolveFirstLetterFrom }) => {
+const UserFormContainer = ({ userId, user, setUser, handleModalClose, resolveFirstLetterFrom }) => {
 
   const [image, setImage] = useState()
   const [croppedImage, setCroppedImage] = useState()
@@ -58,7 +58,7 @@ const UserFormContainer = ({ userId, user, setUser, setIsEditing, resolveFirstLe
         university_visibility: user.universityVisibility
       }
       setUser(updatedArticle)
-      setIsEditing(false)
+      handleModalClose()
     }
   })
 
@@ -84,10 +84,6 @@ const UserFormContainer = ({ userId, user, setUser, setIsEditing, resolveFirstLe
     }
     resetForm()
     setSubmitting(false)
-  }
-
-  const stopEditionOnCancel = () => {
-    setIsEditing(false)
   }
 
   const schema = yup.object().shape({
@@ -135,7 +131,7 @@ const UserFormContainer = ({ userId, user, setUser, setIsEditing, resolveFirstLe
     universities={universities}
     onUserUpdate={onUserUpdate}
     showCancel={true}
-    onCancel={stopEditionOnCancel}
+    onCancel={handleModalClose}
     image={image}
     handleImageChange={handleImageChange}
     setCropper={setCropper}
@@ -152,7 +148,7 @@ UserFormContainer.propTypes = {
   userId: PropTypes.string,
   user: PropTypes.object,
   setUser: PropTypes.func,
-  setIsEditing: PropTypes.func,
+  handleModalClose: PropTypes.func,
   resolveFirstLetterFrom: PropTypes.func
 }
 

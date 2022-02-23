@@ -1,7 +1,7 @@
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
-import { Avatar, CardActions, Container, Stack } from '@mui/material'
+import { Avatar, CardActions, Container, Modal, Stack } from '@mui/material'
 import PropTypes from 'prop-types'
 import Button from '@mui/material/Button'
 import { useNavigate } from 'react-router-dom'
@@ -11,16 +11,15 @@ import UserFormContainer from '../../containers/forms/userForm'
 
 export function User({ userInfo, userDetails }) {
 
+  const [open, setOpen] = useState(false)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
+
   const [user, setUser] = useState(userInfo)
-  const [isEditing, setIsEditing] = useState(false)
 
   const BUTTON_TEXT = {
     USER_DETAILS: 'Details',
     USER_UPDATE: 'Update'
-  }
-
-  const setUnderEdition = () => {
-    setIsEditing(true)
   }
 
   const navigate = useNavigate()
@@ -35,7 +34,7 @@ export function User({ userInfo, userDetails }) {
 
   return (
     <>
-      {isEditing === false && <Container maxWidth='sm' sx={{ textAlign: 'center', mt: 2 }}>
+      <Container maxWidth='sm' sx={{ textAlign: 'center', mt: 2 }}>
         <Card variant='outlined'>
           <CardContent>
             <Stack direction='row' spacing={1} sx={{
@@ -91,19 +90,28 @@ export function User({ userInfo, userDetails }) {
               justifyContent: 'flex-end',
               alignItems: 'flex-end'
             }}>
-              <Button size='small' onClick={setUnderEdition}>
+              <Button size='small' onClick={handleOpen}>
                 {BUTTON_TEXT.USER_UPDATE}
               </Button>
             </CardActions>}
         </Card>
-      </Container>}
-      {isEditing === true && <UserFormContainer
-        user={user}
-        setUser={setUser}
-        userId={userInfo.user_id}
-        setIsEditing={setIsEditing}
-        resolveFirstLetterFrom={resolveFirstLetterFrom}
-      />}
+      </Container>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+      >
+        <div>
+          <UserFormContainer
+            user={user}
+            setUser={setUser}
+            userId={userInfo.user_id}
+            handleModalClose={handleClose}
+            resolveFirstLetterFrom={resolveFirstLetterFrom}
+          />
+        </div>
+      </Modal>
     </>
 
   )

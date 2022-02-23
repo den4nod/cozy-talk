@@ -10,7 +10,7 @@ const UserContainer = ({ userId }) => {
 
   const { isFetching, isLoading, isError, error, data } =
     useQuery(`user-${userId}`, () => getUserById(userId))
-  const user = data?.data[0] || {}
+  const user = data?.data || {}
 
   return (
     <>
