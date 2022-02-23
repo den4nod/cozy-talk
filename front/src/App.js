@@ -28,6 +28,7 @@ import { QueryClient, QueryClientProvider } from 'react-query'
 import { UsersPage } from './components/users/usersPage'
 import { UserPage } from './components/users/userPage'
 import ArticleFormContainer from './containers/forms/articleForm'
+import authContext from './contexts/authContext'
 
 function App() {
 
@@ -46,41 +47,43 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <ErrorBoundary>
-        <BrowserRouter>
-          <Routes>
-            <Route path='/' element={
-              <div className='App'>
-                <ErrorBoundary>
-                  <HeaderContainer page={page} onPageChange={setPage} onPageTitleChange={setPageTitle} />
-                </ErrorBoundary>
-                <Divider />
-                <ErrorBoundary>
-                  <BodyContainer page={page} pageTitle={pageTitle} />
-                </ErrorBoundary>
-              </div>
-            } />
-            <Route path={ROUTES.ARTICLES} element={
-              <Articles pageTitle={ARTICLES_PAGE_TITLE} />
-            } />
-            <Route path={ROUTES.ADD_ARTICLE} element={
-              <ArticleFormContainer pageTitle={ADD_ARTICLE_PAGE_TITLE} />
-            } />
-            <Route path={ROUTES.PROFILE} element={
-              <Profile pageTitle={PROFILE_PAGE_TITLE} />
-            } />
-            <Route path={ROUTES.USERS} element={
-              <UsersPage pageTitle={USERS_PAGE_TITLE} />
-            } />
-            <Route path={ROUTES.USERS + '/:userId'} element={
-              <UserPage pageTitle={USER_PAGE_TITLE} />
-            } />
-            <Route path='/post/:id' element={<PostRouteContainer />} />
-            <Route path='/post/*' element={<NotFound />} />
-            <Route path='/date/:date' element={<DateRouteContainer />} />
-            <Route path='/date/*' element={<NotFound />} />
-            <Route path='*' element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
+        <authContext.Provider value={{authenticated: false, accessToken: '', expiresIn: ''}}>
+          <BrowserRouter>
+            <Routes>
+              <Route path='/' element={
+                <div className='App'>
+                  <ErrorBoundary>
+                    <HeaderContainer page={page} onPageChange={setPage} onPageTitleChange={setPageTitle} />
+                  </ErrorBoundary>
+                  <Divider />
+                  <ErrorBoundary>
+                    <BodyContainer page={page} pageTitle={pageTitle} />
+                  </ErrorBoundary>
+                </div>
+              } />
+              <Route path={ROUTES.ARTICLES} element={
+                <Articles pageTitle={ARTICLES_PAGE_TITLE} />
+              } />
+              <Route path={ROUTES.ADD_ARTICLE} element={
+                <ArticleFormContainer pageTitle={ADD_ARTICLE_PAGE_TITLE} />
+              } />
+              <Route path={ROUTES.PROFILE} element={
+                <Profile pageTitle={PROFILE_PAGE_TITLE} />
+              } />
+              <Route path={ROUTES.USERS} element={
+                <UsersPage pageTitle={USERS_PAGE_TITLE} />
+              } />
+              <Route path={ROUTES.USERS + '/:userId'} element={
+                <UserPage pageTitle={USER_PAGE_TITLE} />
+              } />
+              <Route path='/post/:id' element={<PostRouteContainer />} />
+              <Route path='/post/*' element={<NotFound />} />
+              <Route path='/date/:date' element={<DateRouteContainer />} />
+              <Route path='/date/*' element={<NotFound />} />
+              <Route path='*' element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </authContext.Provider>
       </ErrorBoundary>
     </QueryClientProvider>
   )

@@ -1,7 +1,7 @@
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
 import Typography from '@mui/material/Typography'
-import { CardActions, CardMedia, Container } from '@mui/material'
+import { CardActions, CardMedia, Container, Modal } from '@mui/material'
 import PropTypes from 'prop-types'
 import Button from '@mui/material/Button'
 import { useState } from 'react'
@@ -10,16 +10,15 @@ import ArticleFormContainer from '../../containers/forms/articleForm'
 
 export function Post({ articleInfo, dateCreated }) {
 
-  const [isEditing, setIsEditing] = useState(false)
-  const [article, setArticle] = useState(articleInfo)
+  const [open, setOpen] = useState(false)
+  const handleOpen = () => setOpen(true)
+  const handleClose = () => setOpen(false)
 
-  const setUnderEdition = () => {
-    setIsEditing(true)
-  }
+  const [article, setArticle] = useState(articleInfo)
 
   return (
     <>
-      {isEditing === false && <Container maxWidth='sm' sx={{ textAlign: 'center', mb: 2 }}>
+      <Container maxWidth='sm' sx={{ textAlign: 'center', mb: 2 }}>
         <Card variant='outlined'>
           <CardContent>
             {article.article_image_path && <CardMedia
@@ -39,17 +38,26 @@ export function Post({ articleInfo, dateCreated }) {
               {dateCreated}
             </Typography>
           </CardContent>
-          <CardActions sx={{justifyContent: 'flex-end', alignItems: 'flex-end'}}>
-            <Button onClick={setUnderEdition}>Edit</Button>
+          <CardActions sx={{ justifyContent: 'flex-end', alignItems: 'flex-end' }}>
+            <Button onClick={handleOpen}>Edit</Button>
           </CardActions>
         </Card>
-      </Container>}
-      {isEditing === true && <ArticleFormContainer
-        article={article}
-        setArticle={setArticle}
-        updateIsEditing={setIsEditing}
-        pageTitle={EDIT_ARTICLE_PAGE_TITLE}
-      />}
+      </Container>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby='modal-modal-title'
+        aria-describedby='modal-modal-description'
+      >
+        <div>
+          <ArticleFormContainer
+            article={article}
+            setArticle={setArticle}
+            handleModalClose={handleClose}
+            pageTitle={EDIT_ARTICLE_PAGE_TITLE}
+          />
+        </div>
+      </Modal>
     </>
   )
 }

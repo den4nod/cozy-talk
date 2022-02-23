@@ -222,7 +222,11 @@ UserForm.propTypes = {
     autocompleteOptionPropTypes
   ).isRequired,
   universities: PropTypes.arrayOf(
-    autocompleteOptionPropTypes
+    PropTypes.shape({
+      id: PropTypes.string,
+      value: PropTypes.string,
+      label: PropTypes.string
+    })
   ).isRequired,
   onCancel: PropTypes.func,
   showCancel: PropTypes.bool,
