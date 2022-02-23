@@ -10,40 +10,40 @@ import PropTypes from 'prop-types'
 import { useState } from 'react'
 import { dataUrlToFile } from '../../utils'
 
-const ArticleFormContainer = ({ pageTitle, article, setArticle, updateIsEditing }) => {
+const ArticleFormContainer = ({ pageTitle, article, setArticle, handleModalClose }) => {
 
-  const [image, setImage] = useState();
-  const [croppedImage, setCroppedImage] = useState();
-  const [cropper, setCropper] = useState();
+  const [image, setImage] = useState()
+  const [croppedImage, setCroppedImage] = useState()
+  const [cropper, setCropper] = useState()
 
-  const [imgFilename, setImgFilename] = useState('image.jpeg');
+  const [imgFilename, setImgFilename] = useState('image.jpeg')
 
   const handleImageChange = e => {
-    e.preventDefault();
-    const file = e.target.files[0];
+    e.preventDefault()
+    const file = e.target.files[0]
 
     if (file.type.match('image.*') && file.size < 10000000) {
       setImgFilename(file.name)
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onload = () => {
-        setImage(reader.result);
+        setImage(reader.result)
       }
-      reader.readAsDataURL(file);
+      reader.readAsDataURL(file)
     } else {
-      console.error('Wrong file format or size!');
+      console.error('Wrong file format or size!')
     }
   }
 
   const cropImage = () => {
     if (typeof cropper !== 'undefined') {
-      setCroppedImage(cropper.getCroppedCanvas().toDataURL());
-      setImage(null);
+      setCroppedImage(cropper.getCroppedCanvas().toDataURL())
+      setImage(null)
     }
   }
 
   const deleteImage = () => {
-    setCroppedImage(null);
-    setImage(null);
+    setCroppedImage(null)
+    setImage(null)
   }
 
   const mutation = article ?
@@ -55,19 +55,15 @@ const ArticleFormContainer = ({ pageTitle, article, setArticle, updateIsEditing 
           article_id: article.article_id,
           article_body: articlePayload.articleBody,
           user_id: articlePayload.userId,
-          article_visibility_status_id: articlePayload.articleVisibilityStatusId,
+          article_visibility_status_id: articlePayload.articleVisibilityStatusId
         }
         setArticle(updatedArticle)
-        updateIsEditing(false)
+        handleModalClose()
       }
     }) :
     useMutation((articlePayload) => {
       createArticleFormData(articlePayload)
     })
-
-  const stopEditionOnCancel = () => {
-    updateIsEditing(false)
-  }
 
   const onFormSubmit = (values, { setSubmitting, resetForm }) => {
     const articlePayload = {
@@ -78,7 +74,7 @@ const ArticleFormContainer = ({ pageTitle, article, setArticle, updateIsEditing 
     }
     // later on success or on error add Mui Snackbar
     if (croppedImage) {
-      mutation.mutate({...articlePayload, articleImage: dataUrlToFile(croppedImage, imgFilename)})
+      mutation.mutate({ ...articlePayload, articleImage: dataUrlToFile(croppedImage, imgFilename) })
     } else {
       mutation.mutate(articlePayload)
     }
@@ -121,7 +117,7 @@ const ArticleFormContainer = ({ pageTitle, article, setArticle, updateIsEditing 
     initialValues={initialValues}
     theme={theme}
     onArticleSubmit={onFormSubmit}
-    onCancel={stopEditionOnCancel}
+    onCancel={handleModalClose}
     title={pageTitle}
     submitButtonText={article ? 'Edit' : 'Add'}
     showCancel={!!article}
@@ -141,7 +137,7 @@ ArticleFormContainer.propTypes = {
   pageTitle: PropTypes.string.isRequired,
   article: PropTypes.object,
   setArticle: PropTypes.func,
-  updateIsEditing: PropTypes.func
+  handleModalClose: PropTypes.func
 }
 
 export default ArticleFormContainer
